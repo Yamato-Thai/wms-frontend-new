@@ -1,25 +1,52 @@
-<nav class="flex justify-between items-center bg-white px-6 h-14 shadow-sm">
-  <div class="font-bold text-xl text-blue-600">WMS</div>
-  <div class="flex space-x-5">
-    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Home</a>
-    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Profile</a>
-    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Logout</a>
+<!-- Navbar / Header -->
+<header class="flex justify-between items-center bg-white shadow px-6 h-16">
+  <div class="flex items-center space-x-4">
+    <div class="text-2xl font-bold text-indigo-700">WMS</div>
+    <input type="text" placeholder="Search..."
+      class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
   </div>
-</nav>
-<div class="flex max-w-5xl mx-auto mt-8 bg-white rounded-lg shadow min-h-[600px]">
-  <aside class="w-56 bg-gray-50 border-r border-gray-200 py-6">
-    <ul class="space-y-4">
-      <li>
-        <a routerLink="/inbound/receive-list" routerLinkActive="bg-blue-100 text-blue-700"
-          class="block px-6 py-2 rounded font-medium text-blue-600 hover:bg-blue-50 transition">Inbound</a>
-      </li>
-      <!-- เพิ่มเมนูอื่น ๆ ได้ที่นี่ -->
-    </ul>
+  <div class="flex  items-center space-x-6">
+    <button class="text-gray-600 hover:text-indigo-600">Product</button>
+    <button class="text-gray-600 hover:text-indigo-600">Vendor</button>
+    <button class="text-gray-600 hover:text-indigo-600">Customer</button>
+    <button class="text-gray-600 hover:text-indigo-600">Help</button>
+    <div class="relative">
+      <button class="text-gray-600 hover:text-indigo-600">🔔</button>
+      <span
+        class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">1</span>
+    </div>
+    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+  </div>
+</header>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-indigo-700 text-white flex flex-col py-6 px-4 space-y-4">
+    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
+      <span>🏠</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
+      <span>📦</span>
+      <span>Inbound</span>
+    </a>
+    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
+      <span>🚚</span>
+      <span>Outbound</span>
+    </a>
+    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
+      <span>📊</span>
+      <span>Reports</span>
+    </a>
+    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
+      <span>⚙️</span>
+      <span>Settings</span>
+    </a>
   </aside>
-  <main class="flex-1 p-8 min-w-0">
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+
+
+  <!-- Main Content -->
+  <main class="flex-1 bg-gray-50 p-6 space-y-6">
     <router-outlet></router-outlet>
   </main>
 </div>
