@@ -1,0 +1,25 @@
+<nav class="flex justify-between items-center bg-white px-6 h-14 shadow-sm">
+  <div class="font-bold text-xl text-blue-600">WMS</div>
+  <div class="flex space-x-5">
+    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Home</a>
+    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Profile</a>
+    <a href="#" class="text-gray-700 font-medium hover:text-blue-600">Logout</a>
+  </div>
+</nav>
+<div class="flex max-w-5xl mx-auto mt-8 bg-white rounded-lg shadow min-h-[600px]">
+  <aside class="w-56 bg-gray-50 border-r border-gray-200 py-6">
+    <ul class="space-y-4">
+      <li>
+        <a routerLink="/inbound/receive-list" routerLinkActive="bg-blue-100 text-blue-700"
+          class="block px-6 py-2 rounded font-medium text-blue-600 hover:bg-blue-50 transition">Inbound</a>
+      </li>
+      <!-- เพิ่มเมนูอื่น ๆ ได้ที่นี่ -->
+    </ul>
+  </aside>
+  <main class="flex-1 p-8 min-w-0">
+    <h1 class="text-3xl font-bold underline">
+      Hello world!
+    </h1>
+    <router-outlet></router-outlet>
+  </main>
+</div>
