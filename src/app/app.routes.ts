@@ -1,26 +1,21 @@
-
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout.component';
 
 export const routes: Routes = [
-	{
-		path: '',
-		component: MainLayoutComponent,
-		children: [
-			{
-				path: '',
-				redirectTo: 'dashboard',  // ถ้าเข้าหน้า '' ให้ไป dashboard
-				pathMatch: 'full'
-			},
-			{
-				path: 'dashboard',
-				loadChildren: () => import('./dashboard/dashboard.routes').then(m => m.routes)
-			},
-			{
-				path: 'inbound',
-				loadChildren: () => import('./inbound/inbound.routes').then(m => m.routes)
-			},
-			// เพิ่ม feature อื่น ๆ ที่ต้องการอยู่ใน layout นี้
-		]
-	}
+  {
+    path: '',
+    loadComponent: () => import('./layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { 
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      { 
+        path: 'inbound',
+        loadChildren: () => import('./inbound/inbound.routes').then(m => m.routes)
+      },
+      // เพิ่ม feature อื่น ๆ
+    ]
+  }
 ];

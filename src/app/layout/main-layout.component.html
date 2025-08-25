@@ -1,52 +1,167 @@
-<!-- Navbar / Header -->
-<header class="flex justify-between items-center bg-white shadow px-6 h-16">
-  <div class="flex items-center space-x-4">
-    <div class="text-2xl font-bold text-indigo-700">WMS</div>
-    <input type="text" placeholder="Search..."
-      class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
-  </div>
-  <div class="flex  items-center space-x-6">
-    <button class="text-gray-600 hover:text-indigo-600">Product</button>
-    <button class="text-gray-600 hover:text-indigo-600">Vendor</button>
-    <button class="text-gray-600 hover:text-indigo-600">Customer</button>
-    <button class="text-gray-600 hover:text-indigo-600">Help</button>
-    <div class="relative">
-      <button class="text-gray-600 hover:text-indigo-600">🔔</button>
-      <span
-        class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">1</span>
+<!-- Modern Navbar -->
+<header class="bg-white border-b border-gray-200 shadow-sm fixed top-0 w-full z-40">
+  <div class="px-6 h-16 flex items-center justify-between">
+    <!-- Left Section -->
+    <div class="flex items-center space-x-6">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-bold text-sm">W</span>
+        </div>
+        <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          WMS Pro
+        </h1>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="relative hidden md:block">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span class="text-gray-400">🔍</span>
+        </div>
+        <input type="text" placeholder="Search anything..." class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm 
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                 transition-all duration-200 hover:bg-white">
+      </div>
     </div>
-    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+
+    <!-- Right Section -->
+    <div class="flex items-center space-x-4">
+      <!-- Quick Actions (เฉพาะ Dashboard) -->
+      @if (isDashboard) {
+      <div class="hidden lg:flex items-center space-x-3">
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
+                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+          Products
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
+                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+          Vendors
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
+                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+          Customers
+        </button>
+      </div>
+      }
+      <div class="w-px h-6 bg-gray-200 hidden lg:block"></div>
+
+      <!-- Notifications -->
+      <div class="relative">
+        <button
+          class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200">
+          <span class="text-lg">🔔</span>
+        </button>
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 
+                     flex items-center justify-center font-medium animate-pulse">3</span>
+      </div>
+
+      <!-- Help -->
+      <button class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200">
+        <span class="text-lg">❓</span>
+      </button>
+
+      <!-- Profile -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden md:block text-right">
+          <div class="text-sm font-medium text-gray-900">John Doe</div>
+          <div class="text-xs text-gray-500">Administrator</div>
+        </div>
+        <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full 
+                    flex items-center justify-center text-white font-semibold cursor-pointer
+                    hover:scale-105 transition-transform duration-200">
+          JD
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
-<div class="flex min-h-screen">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-indigo-700 text-white flex flex-col py-6 px-4 space-y-4">
-    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
-      <span>🏠</span>
-      <span>Dashboard</span>
-    </a>
-    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
-      <span>📦</span>
-      <span>Inbound</span>
-    </a>
-    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
-      <span>🚚</span>
-      <span>Outbound</span>
-    </a>
-    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
-      <span>📊</span>
-      <span>Reports</span>
-    </a>
-    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-indigo-600 transition">
-      <span>⚙️</span>
-      <span>Settings</span>
-    </a>
+<!-- Main Layout Container -->
+<div class="pt-16 flex min-h-screen bg-gray-50">
+  <!-- Sidebar (เฉพาะหน้าที่ไม่ใช่ Dashboard) -->
+  <aside
+    class="w-64 bg-white border-r border-gray-200 flex flex-col py-6 px-4 space-y-2 shadow-sm transition-all duration-300"
+    [class.hidden]="isDashboard">
+    <!-- Sidebar Header -->
+    <div class="mb-6 pb-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-800">Navigation</h2>
+      <p class="text-sm text-gray-500">Manage your warehouse</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="space-y-1 flex-1">
+      <a routerLink="dashboard" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+        <span class="text-xl group-hover:scale-110 transition-transform duration-200">🏠</span>
+        <span class="font-medium">Dashboard</span>
+      </a>
+
+      <a routerLink="inbound" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📦</span>
+        <span class="font-medium">Inbound</span>
+        <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">5</span>
+      </a>
+
+      <a routerLink="outbound" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+        <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚚</span>
+        <span class="font-medium">Outbound</span>
+        <span class="ml-auto bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">12</span>
+      </a>
+
+      <a routerLink="inventory" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📊</span>
+        <span class="font-medium">Inventory</span>
+      </a>
+
+      <a routerLink="reports" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📈</span>
+        <span class="font-medium">Reports</span>
+      </a>
+
+      <div class="pt-4 mt-4 border-t border-gray-200">
+        <a routerLink="settings" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">⚙️</span>
+          <span class="font-medium">Settings</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="mt-auto pt-4 border-t border-gray-200">
+      <div class="flex items-center space-x-3 px-4 py-3">
+        <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-900 truncate">Storage Status</p>
+          <div class="flex items-center space-x-2 mt-1">
+            <div class="flex-1 bg-gray-200 rounded-full h-2">
+              <div class="bg-green-500 h-2 rounded-full w-3/4"></div>
+            </div>
+            <span class="text-xs text-gray-500">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </aside>
 
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-hidden">
 
-  <!-- Main Content -->
-  <main class="flex-1 bg-gray-50 p-6 space-y-6">
-    <router-outlet></router-outlet>
+
+    <!-- Other Pages: Show Normal Content -->
+    @if (!isDashboard) {
+    <div class="p-6">
+      <router-outlet></router-outlet>
+    </div>
+    } @else if (isDashboard) {
+    <!-- Dashboard: Show Content -->
+    <div class="px-6 pb-8">
+      <router-outlet></router-outlet>
+    </div>
+    }
   </main>
 </div>
