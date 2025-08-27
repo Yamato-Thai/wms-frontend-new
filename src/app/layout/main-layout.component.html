@@ -63,14 +63,18 @@
       <!-- Profile -->
       <div class="flex items-center space-x-3">
         <div class="hidden md:block text-right">
-          <div class="text-sm font-medium text-gray-900">John Doe</div>
-          <div class="text-xs text-gray-500">Administrator</div>
+          <div class="text-sm font-medium text-gray-900">{{ fullName }}</div>
+          <div class="text-xs text-gray-500">{{ userRole }}</div>
         </div>
         <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full 
                     flex items-center justify-center text-black font-semibold cursor-pointer
                     hover:scale-105 transition-transform duration-200">
           JD
         </div>
+        <button class="ml-2 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
+                (click)="logout()">
+          Logout
+        </button>
       </div>
     </div>
   </div>

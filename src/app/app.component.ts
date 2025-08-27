@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { keycloak } from './core/guards/keycloak';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,12 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'wms-frontend-new';
+  get fullName(): string | null {
+    if (keycloak.authenticated && keycloak.tokenParsed) {
+      const { given_name, family_name, name } = keycloak.tokenParsed as any;
+      if (given_name && family_name) return `${given_name} ${family_name}`;
+      if (name) return name;
+    }
+    return null;
+  }
 }
