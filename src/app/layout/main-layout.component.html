@@ -5,10 +5,10 @@
     <div class="flex items-center space-x-6">
       <!-- Logo -->
       <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-sm">W</span>
+        <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center">
+          <span class="text-black font-bold text-sm">W</span>
         </div>
-        <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
           WMS Pro
         </h1>
       </div>
@@ -19,7 +19,7 @@
           <span class="text-gray-400">🔍</span>
         </div>
         <input type="text" placeholder="Search anything..." class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm 
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent
                  transition-all duration-200 hover:bg-white">
       </div>
     </div>
@@ -29,16 +29,16 @@
       <!-- Quick Actions (เฉพาะ Dashboard) -->
       @if (isDashboard) {
       <div class="hidden lg:flex items-center space-x-3">
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
-                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
+                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
           Products
         </button>
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
-                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
+                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
           Vendors
         </button>
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 
-                       hover:bg-indigo-50 rounded-lg transition-all duration-200">
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
+                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
           Customers
         </button>
       </div>
@@ -48,7 +48,7 @@
       <!-- Notifications -->
       <div class="relative">
         <button
-          class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200">
+          class="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200">
           <span class="text-lg">🔔</span>
         </button>
         <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Help -->
-      <button class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200">
+      <button class="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200">
         <span class="text-lg">❓</span>
       </button>
 
@@ -66,8 +66,8 @@
           <div class="text-sm font-medium text-gray-900">John Doe</div>
           <div class="text-xs text-gray-500">Administrator</div>
         </div>
-        <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full 
-                    flex items-center justify-center text-white font-semibold cursor-pointer
+        <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full 
+                    flex items-center justify-center text-black font-semibold cursor-pointer
                     hover:scale-105 transition-transform duration-200">
           JD
         </div>
@@ -90,43 +90,158 @@
 
     <!-- Navigation Links -->
     <nav class="space-y-1 flex-1">
-      <a routerLink="dashboard" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-        <span class="text-xl group-hover:scale-110 transition-transform duration-200">🏠</span>
-        <span class="font-medium">Dashboard</span>
-      </a>
-
-      <a routerLink="inbound" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📦</span>
-        <span class="font-medium">Inbound</span>
-        <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">5</span>
-      </a>
-
-      <a routerLink="outbound" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-        <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚚</span>
-        <span class="font-medium">Outbound</span>
-        <span class="ml-auto bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">12</span>
-      </a>
-
-      <a routerLink="inventory" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📊</span>
-        <span class="font-medium">Inventory</span>
-      </a>
-
-      <a routerLink="reports" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-        <span class="text-xl group-hover:scale-110 transition-transform duration-200">📈</span>
-        <span class="font-medium">Reports</span>
-      </a>
-
-      <div class="pt-4 mt-4 border-t border-gray-200">
-        <a routerLink="settings" routerLinkActive="bg-indigo-50 text-indigo-700 border-r-2 border-indigo-700" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+      <!-- Main Navigation (แสดงเมื่อไม่ได้อยู่ใน submenu) -->
+      <div [ngClass]="{'hidden': isInInboundSection || isInOutboundSection}">
+        <a routerLink="dashboard" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
                  hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">⚙️</span>
-          <span class="font-medium">Settings</span>
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🏠</span>
+          <span class="font-medium">Dashboard</span>
+        </a>
+
+        <!-- Inbound with Submenu -->
+        <div>
+          <button (click)="toggleInboundMenu()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+            <span class="text-xl group-hover:scale-110 transition-transform duration-200">📦</span>
+            <span class="font-medium">Inbound</span>
+            <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">5</span>
+            <span class="text-gray-400 transform transition-transform duration-200" [class.rotate-90]="isInboundOpen">▶</span>
+          </button>
+          
+          <!-- Inbound Submenu -->
+          <div class="ml-6 space-y-1 overflow-hidden transition-all duration-300" [class.max-h-0]="!isInboundOpen" [class.max-h-96]="isInboundOpen">
+            <a routerLink="inbound/receive" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">📥</span>
+              <span>Receive Items</span>
+            </a>
+            <a routerLink="inbound/purchase-orders" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">📋</span>
+              <span>Purchase Orders</span>
+            </a>
+            <a routerLink="inbound/quality-check" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">✅</span>
+              <span>Quality Check</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Outbound with Submenu -->
+        <div>
+          <button (click)="toggleOutboundMenu()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+            <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚚</span>
+            <span class="font-medium">Outbound</span>
+            <span class="ml-auto bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">12</span>
+            <span class="text-gray-400 transform transition-transform duration-200" [class.rotate-90]="isOutboundOpen">▶</span>
+          </button>
+          
+          <!-- Outbound Submenu -->
+          <div class="ml-6 space-y-1 overflow-hidden transition-all duration-300" [class.max-h-0]="!isOutboundOpen" [class.max-h-96]="isOutboundOpen">
+            <a routerLink="outbound/pick-pack" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">📤</span>
+              <span>Pick & Pack</span>
+            </a>
+            <a routerLink="outbound/shipping" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">🚛</span>
+              <span>Shipping</span>
+            </a>
+            <a routerLink="outbound/sales-orders" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
+                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
+              <span class="text-base">🛒</span>
+              <span>Sales Orders</span>
+            </a>
+          </div>
+        </div>
+
+        <a routerLink="inventory" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📊</span>
+          <span class="font-medium">Inventory</span>
+        </a>
+
+        <a routerLink="reports" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📈</span>
+          <span class="font-medium">Reports</span>
+        </a>
+
+        <div class="pt-4 mt-4 border-t border-gray-200">
+          <a routerLink="settings" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                   hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+            <span class="text-xl group-hover:scale-110 transition-transform duration-200">⚙️</span>
+            <span class="font-medium">Settings</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Inbound Section Menu (แสดงเมื่ออยู่ใน inbound routes) -->
+      <div [ngClass]="{'hidden': !isInInboundSection}">
+        <div class="mb-4">
+          <button (click)="backToMainMenu()" class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
+            <span>←</span>
+            <span>Back to Main Menu</span>
+          </button>
+        </div>
+        
+        <div class="mb-4 pb-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 Inbound Operations</h3>
+          <p class="text-sm text-gray-500 px-4">Manage incoming shipments</p>
+        </div>
+
+        <a routerLink="inbound/receive-list" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
+          <span class="font-medium">Receive Items</span>
+        </a>
+
+        <a routerLink="inbound/purchase-orders" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📋</span>
+          <span class="font-medium">Purchase Orders</span>
+        </a>
+
+        <a routerLink="inbound/quality-check" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">✅</span>
+          <span class="font-medium">Quality Check</span>
+        </a>
+      </div>
+
+      <!-- Outbound Section Menu (แสดงเมื่ออยู่ใน outbound routes) -->
+      <div [ngClass]="{'hidden': !isInOutboundSection}">
+        <div class="mb-4">
+          <button (click)="backToMainMenu()" class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
+            <span>←</span>
+            <span>Back to Main Menu</span>
+          </button>
+        </div>
+        
+        <div class="mb-4 pb-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-orange-600 px-4">🚚 Outbound Operations</h3>
+          <p class="text-sm text-gray-500 px-4">Handle shipping and orders</p>
+        </div>
+
+        <a routerLink="outbound/pick-pack" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📤</span>
+          <span class="font-medium">Pick & Pack</span>
+        </a>
+
+        <a routerLink="outbound/shipping" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚛</span>
+          <span class="font-medium">Shipping</span>
+        </a>
+
+        <a routerLink="outbound/sales-orders" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🛒</span>
+          <span class="font-medium">Sales Orders</span>
         </a>
       </div>
     </nav>
@@ -139,7 +254,7 @@
           <p class="text-sm font-medium text-gray-900 truncate">Storage Status</p>
           <div class="flex items-center space-x-2 mt-1">
             <div class="flex-1 bg-gray-200 rounded-full h-2">
-              <div class="bg-green-500 h-2 rounded-full w-3/4"></div>
+              <div class="bg-yellow-400 h-2 rounded-full w-3/4"></div>
             </div>
             <span class="text-xs text-gray-500">75%</span>
           </div>

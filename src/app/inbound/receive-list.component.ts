@@ -7,3 +7,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./receive-list.component.scss']
 })
 export class ReceiveListComponent {}
+console.log('ReceiveListComponent loaded');
