@@ -1,0 +1,1313 @@
+[
+    {
+        "Id": 1,
+        "Parent": 0,
+        "Name": "Project Information",
+        "Description": "Project Information",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig",
+        "Sequent": 1,
+        "Image": "./assets/images/icons/Project_management.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 2,
+        "Parent": 0,
+        "Name": "Definition Management",
+        "Description": "Definition Management",
+        "IsActive": 1,
+        "Link": "/modules/definition",
+        "Sequent": 2,
+        "Image": "./assets/images/icons/Definition_management.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 3,
+        "Parent": 0,
+        "Name": "Master Management",
+        "Description": "Master Management",
+        "IsActive": 1,
+        "Link": "/modules/master",
+        "Sequent": 3,
+        "Image": "./assets/images/icons/Master_Management.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 4,
+        "Parent": 0,
+        "Name": "Inbound Management",
+        "Description": "Inbound Management",
+        "IsActive": 1,
+        "Link": "/modules/inbound",
+        "Sequent": 4,
+        "Image": "./assets/images/icons/inbound.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 5,
+        "Parent": 0,
+        "Name": "Inventory Management",
+        "Description": "Inventory Management",
+        "IsActive": 1,
+        "Link": "/modules/inventory",
+        "Sequent": 5,
+        "Image": "./assets/images/icons/Inventory.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 6,
+        "Parent": 0,
+        "Name": "Outbound Management",
+        "Description": "Outbound Management",
+        "IsActive": 1,
+        "Link": "/modules/outbound",
+        "Sequent": 6,
+        "Image": "./assets/images/icons/Outbound.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 7,
+        "Parent": 1,
+        "Name": "Main Config",
+        "Description": "Main Config",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/main",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 8,
+        "Parent": 1,
+        "Name": "Receiving Config",
+        "Description": "Receiving Config",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/receiving",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 9,
+        "Parent": 1,
+        "Name": "Ordering Config",
+        "Description": "Ordering Config",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/ordering",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 10,
+        "Parent": 1,
+        "Name": "Label Display",
+        "Description": "Label Display",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/labeldisplay",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 11,
+        "Parent": 1,
+        "Name": "Spare Field Config",
+        "Description": "Spare Field Config",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/sparefield",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 12,
+        "Parent": 2,
+        "Name": "Item Definition",
+        "Description": "Item Definition",
+        "IsActive": 1,
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 13,
+        "Parent": 12,
+        "Name": "Item Import Definition",
+        "Description": "Item Import Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/item/import",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 14,
+        "Parent": 12,
+        "Name": "Item Export Definition",
+        "Description": "Item Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/item/export",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 15,
+        "Parent": 2,
+        "Name": "Supplier Definition",
+        "Description": "Supplier Definition",
+        "IsActive": 1,
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 16,
+        "Parent": 15,
+        "Name": "Supplier Import Definition",
+        "Description": "Supplier Import Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/supplier/import",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 17,
+        "Parent": 15,
+        "Name": "Supplier Export Definition",
+        "Description": "Supplier Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/supplier/export",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 18,
+        "Parent": 2,
+        "Name": "Receiving Definition",
+        "Description": "Receiving Definition",
+        "IsActive": 1,
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 19,
+        "Parent": 18,
+        "Name": "Receiving Import Definition",
+        "Description": "Receiving Import Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/receiving/import",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 20,
+        "Parent": 18,
+        "Name": "Receiving Export Definition",
+        "Description": "Receiving Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/receiving/export",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 21,
+        "Parent": 18,
+        "Name": "Plan Check Export Definition",
+        "Description": "Plan Check Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/plancheck/export",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 22,
+        "Parent": 18,
+        "Name": "Receiving Check Export Definition",
+        "Description": "Receiving Check Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/receivingcheck/export",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 23,
+        "Parent": 2,
+        "Name": "Inventory Definition",
+        "Description": "Inventory Definition",
+        "IsActive": 1,
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 24,
+        "Parent": 23,
+        "Name": "Inventory Export Definition",
+        "Description": "Inventory Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/inventory/export",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 25,
+        "Parent": 2,
+        "Name": "Order Definition",
+        "Description": "Order Definition",
+        "IsActive": 1,
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 26,
+        "Parent": 25,
+        "Name": "Order Import Definition",
+        "Description": "Order Import Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/order/import",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 27,
+        "Parent": 2,
+        "Name": "Picking List Definition",
+        "Description": "Picking List Definition",
+        "IsActive": 1,
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 28,
+        "Parent": 27,
+        "Name": "Picking List Definition",
+        "Description": "Picking List Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/picking-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 29,
+        "Parent": 2,
+        "Name": "Picking Slip Definition",
+        "Description": "Picking Slip Definition",
+        "IsActive": 1,
+        "Sequent": 7,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 30,
+        "Parent": 29,
+        "Name": "Picking Slip Definition",
+        "Description": "Picking Slip Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/picking-slipslip",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 31,
+        "Parent": 2,
+        "Name": "Shipping Definition",
+        "Description": "Shipping Definition",
+        "IsActive": 1,
+        "Sequent": 8,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 32,
+        "Parent": 31,
+        "Name": "Shipping Export Definition",
+        "Description": "Shipping Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/shipping/export",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 33,
+        "Parent": 2,
+        "Name": "Delivery Definition",
+        "Description": "Delivery Definition",
+        "IsActive": 1,
+        "Sequent": 9,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 34,
+        "Parent": 33,
+        "Name": "Delivery Export Definition",
+        "Description": "Delivery Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/delivery/export",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 35,
+        "Parent": 2,
+        "Name": "Label Definition",
+        "Description": "Label Definition",
+        "IsActive": 1,
+        "Sequent": 10,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 36,
+        "Parent": 35,
+        "Name": "Label Warranty Definition",
+        "Description": "Label Warranty Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/label/warranty",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 37,
+        "Parent": 2,
+        "Name": "Tag Barcode Definition",
+        "Description": "Tag Barcode Definition",
+        "IsActive": 1,
+        "Sequent": 11,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 38,
+        "Parent": 37,
+        "Name": "Tag Barcode Definition",
+        "Description": "Tag Barcode Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/tag/tagbarcode",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 39,
+        "Parent": 3,
+        "Name": "Supplier ",
+        "Description": "Supplier",
+        "IsActive": 1,
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 40,
+        "Parent": 39,
+        "Name": "Supplier List",
+        "Description": "Supplier List",
+        "IsActive": 1,
+        "Link": "/modules/master/supplier",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 41,
+        "Parent": 39,
+        "Name": "Supplier Import",
+        "Description": "Supplier Import",
+        "IsActive": 1,
+        "Link": "/modules/master/supplier/import",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 42,
+        "Parent": 39,
+        "Name": "Supplier Master",
+        "Description": "Supplier Master",
+        "IsActive": 1,
+        "Link": "/modules/master/supplier/manage",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 43,
+        "Parent": 3,
+        "Name": "Item ",
+        "Description": "Item",
+        "IsActive": 1,
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 44,
+        "Parent": 43,
+        "Name": "Item List",
+        "Description": "Item List",
+        "IsActive": 1,
+        "Link": "/modules/master/item",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 45,
+        "Parent": 43,
+        "Name": "Item Import",
+        "Description": "Item Import",
+        "IsActive": 1,
+        "Link": "/modules/master/item/import",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 46,
+        "Parent": 43,
+        "Name": "Item Master",
+        "Description": "Item Master",
+        "IsActive": 1,
+        "Link": "/modules/master/item/manage",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 47,
+        "Parent": 43,
+        "Name": "Item Set",
+        "Description": "Item Set",
+        "IsActive": 1,
+        "Link": "/modules/master/item/itemset",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 48,
+        "Parent": 43,
+        "Name": "Generate Item Barcode",
+        "Description": "Generate Item Barcode",
+        "IsActive": 1,
+        "Link": "/modules/master/item/generate/barcode",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 49,
+        "Parent": 3,
+        "Name": "Categories",
+        "Description": "Categories",
+        "IsActive": 1,
+        "Link": "/modules/master/category",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 50,
+        "Parent": 3,
+        "Name": "Units",
+        "Description": "Units",
+        "IsActive": 1,
+        "Link": "/modules/master/units",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 51,
+        "Parent": 3,
+        "Name": "Quality Types",
+        "Description": "Quality Types",
+        "IsActive": 1,
+        "Link": "/modules/master/qualitytypes",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 52,
+        "Parent": 4,
+        "Name": "Receiving Overview",
+        "Description": "Receiving Overview",
+        "IsActive": 1,
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 53,
+        "Parent": 4,
+        "Name": "Search Receiving",
+        "Description": "Search Receiving",
+        "IsActive": 1,
+        "Link": "/inbound/receive-list",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 54,
+        "Parent": 4,
+        "Name": "Receiving Plan",
+        "Description": "Receiving Plan",
+        "IsActive": 1,
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 55,
+        "Parent": 54,
+        "Name": "Import Receiving Plan",
+        "Description": "Import Receiving Plan",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/import",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 56,
+        "Parent": 54,
+        "Name": "Input Receiving Plan",
+        "Description": "Input Receiving Plan",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/plan",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 57,
+        "Parent": 4,
+        "Name": "Receiving",
+        "Description": "Receiving",
+        "IsActive": 1,
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 58,
+        "Parent": 57,
+        "Name": "Input Receiving",
+        "Description": "Input Receiving",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/input",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 59,
+        "Parent": 57,
+        "Name": "Receiving List",
+        "Description": "Receiving List",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/list",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 60,
+        "Parent": 57,
+        "Name": "Put Away List",
+        "Description": "Put Away List",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/putaway",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 61,
+        "Parent": 4,
+        "Name": "Delete Receiving",
+        "Description": "Delete Receiving",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/delete",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 62,
+        "Parent": 4,
+        "Name": "Receiving Report",
+        "Description": "Receiving Report",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/report",
+        "Sequent": 7,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 63,
+        "Parent": 4,
+        "Name": "Receiving Check Report",
+        "Description": "Receiving Check Report",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receivingcheck/report",
+        "Sequent": 8,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 64,
+        "Parent": 4,
+        "Name": "Warranty Report",
+        "Description": "Warranty Report",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/warranty",
+        "Sequent": 9,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 65,
+        "Parent": 5,
+        "Name": "Inventory Overview",
+        "Description": "Inventory",
+        "IsActive": 1,
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 66,
+        "Parent": 5,
+        "Name": "Inventory Adjustment",
+        "Description": "Inventory Adjustment",
+        "IsActive": 1,
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 67,
+        "Parent": 66,
+        "Name": "Inventory Adjustment List",
+        "Description": "Inventory Adjustment List",
+        "IsActive": 1,
+        "Link": "/modules/inventory/adjustment-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 68,
+        "Parent": 66,
+        "Name": "Inventory Adjustment",
+        "Description": "Inventory Adjustment",
+        "IsActive": 1,
+        "Link": "/modules/inventory/adjustment",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 69,
+        "Parent": 5,
+        "Name": "Location Adjustment",
+        "Description": "Location Adjustment",
+        "IsActive": 1,
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 70,
+        "Parent": 69,
+        "Name": "Location Adjustment List",
+        "Description": "Location Adjustment List",
+        "IsActive": 1,
+        "Link": "/modules/inventory/location-adjustment-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 71,
+        "Parent": 69,
+        "Name": "Location Adjustment",
+        "Description": "Location Adjustment",
+        "IsActive": 1,
+        "Link": "/modules/inventory/location-adjustment",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 72,
+        "Parent": 5,
+        "Name": "Quality Type Adjustment",
+        "Description": "Quality Type Adjustment",
+        "IsActive": 1,
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 73,
+        "Parent": 72,
+        "Name": "Quality Type Adjustment List",
+        "Description": "Quality Type Adjustment List",
+        "IsActive": 1,
+        "Link": "/modules/inventory/quality-adjustment-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 74,
+        "Parent": 72,
+        "Name": "Quality Type Adjustment",
+        "Description": "Quality Type Adjustment",
+        "IsActive": 1,
+        "Link": "/modules/inventory/quality-adjustment",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 75,
+        "Parent": 5,
+        "Name": "Product Problem",
+        "Description": "Product Problem",
+        "IsActive": 1,
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 76,
+        "Parent": 75,
+        "Name": "Product Problem List",
+        "Description": "Product Problem List",
+        "IsActive": 1,
+        "Link": "/modules/inventory/product-problem-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 77,
+        "Parent": 75,
+        "Name": "Input Product Problem",
+        "Description": "Input Product Problem",
+        "IsActive": 1,
+        "Link": "/modules/inventory/input-product-problem",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 78,
+        "Parent": 5,
+        "Name": "Inventory Report",
+        "Description": "Inventory Report",
+        "IsActive": 1,
+        "Link": "/modules/inventory/",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 79,
+        "Parent": 6,
+        "Name": "Order Overview",
+        "Description": "Order Overview",
+        "IsActive": 1,
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 80,
+        "Parent": 6,
+        "Name": "Order",
+        "Description": "Order",
+        "IsActive": 1,
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 81,
+        "Parent": 80,
+        "Name": "Search Order",
+        "Description": "Search Order",
+        "IsActive": 1,
+        "Link": "/modules/outbound/order",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 82,
+        "Parent": 80,
+        "Name": "Import Order",
+        "Description": "Import Order",
+        "IsActive": 1,
+        "Link": "/modules/outbound/import-order",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 83,
+        "Parent": 80,
+        "Name": "Input Order",
+        "Description": "Input Order",
+        "IsActive": 1,
+        "Link": "/modules/outbound/input-order",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 84,
+        "Parent": 80,
+        "Name": "Confirm Order",
+        "Description": "Confirm Order",
+        "IsActive": 1,
+        "Link": "/modules/outbound/confirm-order",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 85,
+        "Parent": 80,
+        "Name": "Cancel / Delete Order",
+        "Description": "Delete Order",
+        "IsActive": 1,
+        "Link": "/modules/outbound/delete-order",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 86,
+        "Parent": 6,
+        "Name": "Allocation",
+        "Description": "Allocation",
+        "IsActive": 1,
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 87,
+        "Parent": 86,
+        "Name": "Allocate",
+        "Description": "Allocate",
+        "IsActive": 1,
+        "Link": "/modules/outbound/allocate/confirm",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 88,
+        "Parent": 86,
+        "Name": "Cancel Allocate",
+        "Description": "Cancel Allocate",
+        "IsActive": 1,
+        "Link": "/modules/outbound/allocate/cancel",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 89,
+        "Parent": 6,
+        "Name": "Picking",
+        "Description": "Picking",
+        "IsActive": 1,
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 90,
+        "Parent": 89,
+        "Name": "Picking List",
+        "Description": "Picking List",
+        "IsActive": 1,
+        "Link": "/modules/outbound/picking-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 91,
+        "Parent": 6,
+        "Name": "Inspection",
+        "Description": "Inspection",
+        "IsActive": 1,
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 92,
+        "Parent": 91,
+        "Name": "Shipping Inspection",
+        "Description": "Shipping Inspection",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping-inspection",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 93,
+        "Parent": 91,
+        "Name": "Shipping Inspection By Picking List",
+        "Description": "Shipping Inspection By Picking List",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping-inspection-bypicking",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 94,
+        "Parent": 91,
+        "Name": "Shipping Inspection By Item Code",
+        "Description": "Shipping Inspection By Item Code",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping-inspection-byitem",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 95,
+        "Parent": 91,
+        "Name": "Cancel Inspection",
+        "Description": "Cancel Inspection",
+        "IsActive": 1,
+        "Link": "/modules/outbound/cancel-inspection",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 96,
+        "Parent": 6,
+        "Name": "Shipping",
+        "Description": "Shipping",
+        "IsActive": 1,
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 97,
+        "Parent": 96,
+        "Name": "Confirm Shipping",
+        "Description": "Confirm Shipping",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping/confirm",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 98,
+        "Parent": 96,
+        "Name": "Shipping Report",
+        "Description": "Shipping Report",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping/report",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 99,
+        "Parent": 6,
+        "Name": "Warranty Report",
+        "Description": "Warranty Report",
+        "IsActive": 1,
+        "Link": "/modules/outbound/warranty-report",
+        "Sequent": 7,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 106,
+        "Parent": 4,
+        "Name": "Receiving Confirm",
+        "Description": "Confirm Receiving",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/receiving-confirm",
+        "Sequent": 5,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 107,
+        "Parent": 91,
+        "Name": "Tsuruha Only",
+        "Description": "Tsuruha Only",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping-inspection-decreasing",
+        "Sequent": 4,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 108,
+        "Parent": 66,
+        "Name": "Control Group Adjustment",
+        "Description": "Control Group Adjustment",
+        "IsActive": 1,
+        "Link": "/modules/inventory/control-group-adjustment",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 111,
+        "Parent": 80,
+        "Name": "Input Order Itemset",
+        "Description": "Input Order Itemset",
+        "IsActive": 1,
+        "Link": "/modules/outbound/input-order-itemset",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 116,
+        "Parent": 37,
+        "Name": "Master Label Definition",
+        "Description": "Master Label Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/tag/mastertag",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 120,
+        "Parent": 2,
+        "Name": "All Export Definition",
+        "Description": "All Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/all/export",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 142,
+        "Parent": 3,
+        "Name": "Master Label",
+        "Description": "Master Label",
+        "IsActive": 1,
+        "Link": "/modules/master/mastertaglabel",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 152,
+        "Parent": 1,
+        "Name": "Auto Email",
+        "Description": "Auto Email",
+        "IsActive": 1,
+        "Link": "/modules/projectconfig/automail",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1154,
+        "Parent": 6,
+        "Name": "Borrow",
+        "Description": "Borrow",
+        "IsActive": 1,
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1155,
+        "Parent": 1154,
+        "Name": "Return Input",
+        "Description": "Return Input",
+        "IsActive": 1,
+        "Link": "/modules/outbound/return-input",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1201,
+        "Parent": 91,
+        "Name": "Shipping Inspection By Serial Group",
+        "Description": "Shipping Inspection By Serial Group",
+        "IsActive": 1,
+        "Link": "/modules/outbound/shipping-inspection-byserialgroup",
+        "Sequent": 6,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1208,
+        "Parent": 0,
+        "Name": "Accounting Management",
+        "Description": "Accounting Management",
+        "IsActive": 1,
+        "Link": "/modules/accounting/job-list",
+        "Sequent": 7,
+        "Image": "./assets/images/icons/inbound.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1209,
+        "Parent": 1222,
+        "Name": "Job List",
+        "Description": "Job List",
+        "IsActive": 1,
+        "Link": "/modules/accounting/job-list",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1210,
+        "Parent": 1222,
+        "Name": "Job Input",
+        "Description": "Job Input",
+        "IsActive": 1,
+        "Link": "/modules/accounting/job-input",
+        "Sequent": 2,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1211,
+        "Parent": 1222,
+        "Name": "Labor Mange",
+        "Description": "Labor Mange",
+        "IsActive": 1,
+        "Link": "/modules/accounting/labor-manage",
+        "Sequent": 3,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1212,
+        "Parent": 2,
+        "Name": "Merge Export Definition",
+        "Description": "Merge Export Definition",
+        "IsActive": 1,
+        "Link": "/modules/definition/merge-export",
+        "Sequent": 1,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1222,
+        "Parent": 1208,
+        "Name": "Job",
+        "Description": "Job",
+        "IsActive": 1,
+        "Link": "/modules/accounting",
+        "Sequent": 7,
+        "Image": "./assets/images/icons/inbound.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1239,
+        "Parent": 1208,
+        "Name": "Confirm Pre-Inv List",
+        "Description": "Confirm Pre-Inv List",
+        "IsActive": 1,
+        "Link": "/modules/accounting/confirm-preinv-list",
+        "Sequent": 8,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1251,
+        "Parent": 1208,
+        "Name": "Confirm Pre-Pur List",
+        "Description": "Confirm Pre-Pur List",
+        "IsActive": 1,
+        "Link": "/modules/accounting/confirm-prepur-list",
+        "Sequent": 9,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1267,
+        "Parent": 5,
+        "Name": "Balance Stock Report",
+        "Description": "Balance Stock Report",
+        "IsActive": 1,
+        "Link": "/modules/inventory/balance-stock",
+        "Sequent": 7,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1302,
+        "Parent": 5,
+        "Name": "Check Stock List",
+        "Description": "Check Stock List",
+        "IsActive": 1,
+        "Link": "/modules/inventory/check-stock-list",
+        "Sequent": 8,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1308,
+        "Parent": 5,
+        "Name": "CheckStock Import/Export",
+        "Description": "CheckStock Import/Export",
+        "IsActive": 1,
+        "Link": "/modules/inventory/check-stock-import/export",
+        "Sequent": 9,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1341,
+        "Parent": 4,
+        "Name": "Adjust Serial Group",
+        "Description": "Adjust Serial Group",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/adjust-serial-group",
+        "Sequent": 10,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1395,
+        "Parent": 6,
+        "Name": "Order Task Manage",
+        "Description": "Order Task Manage",
+        "IsActive": 1,
+        "Link": "/modules/outbound/order-task",
+        "Sequent": 9,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1398,
+        "Parent": 5,
+        "Name": "Adastria Check Tools",
+        "Description": "Adastria Check Tools",
+        "IsActive": 1,
+        "Link": "/modules/inventory/adastria",
+        "Sequent": 10,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1402,
+        "Parent": 0,
+        "Name": "RFID Tag Check",
+        "Description": "RFID Tag Check",
+        "IsActive": 1,
+        "Link": "modules/inventory/rfid-tag-check",
+        "Sequent": 8,
+        "Image": "./assets/images/icons/Definition_management.png",
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1407,
+        "Parent": 4,
+        "Name": "Receive Task Manage",
+        "Description": "Receive Task Manage",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/receive-task",
+        "Sequent": 11,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1410,
+        "Parent": 5,
+        "Name": "Aisin Movement Plan",
+        "Description": "Aisin Movement Plan",
+        "IsActive": 1,
+        "Link": "/modules/inventory/aisin-movement-plan",
+        "Sequent": 11,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1414,
+        "Parent": 4,
+        "Name": "Aisin Receive Plan FreeZone",
+        "Description": "Aisin Receive Plan FreeZone",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/aisin-receive-plan-freezone",
+        "Sequent": 12,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1415,
+        "Parent": 6,
+        "Name": "Aisin Order Plan FreeZone",
+        "Description": "Aisin Order Plan FreeZone",
+        "IsActive": 1,
+        "Link": "/modules/outbound/aisin-order-plan-freezone",
+        "Sequent": 10,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1418,
+        "Parent": 6,
+        "Name": "Aisin Order Plan",
+        "Description": "Aisin Order Plan",
+        "IsActive": 1,
+        "Link": "/modules/outbound/aisin-order-plan",
+        "Sequent": 11,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1420,
+        "Parent": 4,
+        "Name": "Aisin Receive Plan",
+        "Description": "Aisin Receive Plan",
+        "IsActive": 1,
+        "Link": "/modules/inbound/receiving/aisin-receive-plan",
+        "Sequent": 13,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1422,
+        "Parent": 5,
+        "Name": "Aisin Movement Plan Freezone",
+        "Description": "Aisin Movement Plan Freezone",
+        "IsActive": 1,
+        "Link": "/modules/inventory/aisin-movement-plan-freezone",
+        "Sequent": 12,
+        "DoMain": "WMS-Main"
+    },
+    {
+        "Id": 1427,
+        "Parent": 5,
+        "Name": "Aisin SJ Stock",
+        "Description": "Aisin SJ Stock",
+        "IsActive": 1,
+        "Link": "/modules/inventory/aisin-sj-stock",
+        "Sequent": 13,
+        "DoMain": "WMS-Main"
+    }
+]

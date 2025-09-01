@@ -71,8 +71,9 @@
                     hover:scale-105 transition-transform duration-200">
           JD
         </div>
-        <button class="ml-2 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
-                (click)="logout()">
+        <button
+          class="ml-2 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
+          (click)="logout()">
           Logout
         </button>
       </div>
@@ -84,7 +85,7 @@
 <div class="pt-16 flex min-h-screen bg-gray-50">
   <!-- Sidebar (เฉพาะหน้าที่ไม่ใช่ Dashboard) -->
   <aside
-    class="w-64 bg-white border-r border-gray-200 flex flex-col py-6 px-4 space-y-2 shadow-sm transition-all duration-300"
+    class="w-72 bg-white border-r border-gray-200 flex flex-col py-6 px-4 space-y-2 shadow-sm transition-all duration-300"
     [class.hidden]="isDashboard">
     <!-- Sidebar Header -->
     <div class="mb-6 pb-4 border-b border-gray-200">
@@ -94,160 +95,110 @@
 
     <!-- Navigation Links -->
     <nav class="space-y-1 flex-1">
-      <!-- Main Navigation (แสดงเมื่อไม่ได้อยู่ใน submenu) -->
-      <div [ngClass]="{'hidden': isInInboundSection || isInOutboundSection}">
-        <a routerLink="dashboard" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🏠</span>
-          <span class="font-medium">Dashboard</span>
-        </a>
+      @for (menu of showMenu; track menu.Id) {
 
-        <!-- Inbound with Submenu -->
-        <div>
-          <button (click)="toggleInboundMenu()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-            <span class="text-xl group-hover:scale-110 transition-transform duration-200">📦</span>
-            <span class="font-medium">Inbound</span>
-            <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">5</span>
-            <span class="text-gray-400 transform transition-transform duration-200" [class.rotate-90]="isInboundOpen">▶</span>
-          </button>
+      <div class="mb-4">
+        <button (click)="backToMainMenu()"
+          class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
+          <span>←</span>
+          <span>Back to Main Menu</span>
+        </button>
+      </div>
+
+      <div class="mb-4 pb-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 {{menu.Name}}</h3>
+        <p class="text-sm text-gray-500 px-4">{{menu.Description}}</p>
+      </div>
+
+      <!-- Recursive Menu Items -->
+      @for (item of menu.Children; track item.Id) {
+        <div class="menu-item">
           
-          <!-- Inbound Submenu -->
-          <div class="ml-6 space-y-1 overflow-hidden transition-all duration-300" [class.max-h-0]="!isInboundOpen" [class.max-h-96]="isInboundOpen">
-            <a routerLink="inbound/receive" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">📥</span>
-              <span>Receive Items</span>
+          <!-- Item with children (expandable) -->
+          @if (item.Children && item.Children.length > 0) {
+            <button (click)="toggleExpanded(item.Id)"
+              class="w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                     hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+              <div class="flex items-center space-x-3">
+                <span class="text-xl group-hover:scale-110 transition-transform duration-200">📁</span>
+                <span class="font-medium">{{item.Name}}</span>
+              </div>
+              <svg class="w-4 h-4 transition-transform duration-200"
+                   [class.rotate-90]="isExpanded(item.Id)"
+                   fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
+              </svg>
+            </button>
+
+            <!-- Sliding children container -->
+            <div class="overflow-hidden transition-all duration-300 ease-in-out"
+                 [class.max-h-96]="isExpanded(item.Id)"
+                 [class.opacity-100]="isExpanded(item.Id)"
+                 [class.max-h-0]="!isExpanded(item.Id)"
+                 [class.opacity-0]="!isExpanded(item.Id)">
+              
+              @for (child of item.Children; track child.Id) {
+                <div class="pl-6">
+                  
+                  <!-- Nested child with children -->
+                  @if (child.Children && child.Children.length > 0) {
+                    <button (click)="toggleExpanded(child.Id)"
+                      class="w-full flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-gray-600 
+                             hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                      <div class="flex items-center space-x-3">
+                        <span class="text-lg group-hover:scale-110 transition-transform duration-200">📂</span>
+                        <span class="font-medium text-sm">{{child.Name}}</span>
+                      </div>
+                      <svg class="w-3 h-3 transition-transform duration-200"
+                           [class.rotate-90]="isExpanded(child.Id)"
+                           fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
+                      </svg>
+                    </button>
+
+                    <!-- Nested children -->
+                    <div class="overflow-hidden transition-all duration-300 ease-in-out"
+                         [class.max-h-96]="isExpanded(child.Id)"
+                         [class.opacity-100]="isExpanded(child.Id)"
+                         [class.max-h-0]="!isExpanded(child.Id)"
+                         [class.opacity-0]="!isExpanded(child.Id)">
+                      
+                      @for (grandChild of child.Children; track grandChild.Id) {
+                        <a [routerLink]="grandChild.Link" 
+                           routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
+                           class="flex items-center space-x-3 px-4 py-2 ml-6 rounded-lg text-gray-600 
+                                  hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                          <span class="text-sm group-hover:scale-110 transition-transform duration-200">📄</span>
+                          <span class="font-medium text-sm">{{grandChild.Name}}</span>
+                        </a>
+                      }
+                    </div>
+                  } @else {
+                    <!-- Direct child link (no children) -->
+                    <a [routerLink]="child.Link" 
+                       routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
+                       class="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 
+                              hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                      <span class="text-lg group-hover:scale-110 transition-transform duration-200">📄</span>
+                      <span class="font-medium text-sm">{{child.Name}}</span>
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Leaf item (clickable link) -->
+            <a [routerLink]="item.Link" 
+               routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+                      hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+              <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
+              <span class="font-medium">{{item.Name}}</span>
             </a>
-            <a routerLink="inbound/purchase-orders" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">📋</span>
-              <span>Purchase Orders</span>
-            </a>
-            <a routerLink="inbound/quality-check" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">✅</span>
-              <span>Quality Check</span>
-            </a>
-          </div>
+          }
         </div>
-
-        <!-- Outbound with Submenu -->
-        <div>
-          <button (click)="toggleOutboundMenu()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-            <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚚</span>
-            <span class="font-medium">Outbound</span>
-            <span class="ml-auto bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">12</span>
-            <span class="text-gray-400 transform transition-transform duration-200" [class.rotate-90]="isOutboundOpen">▶</span>
-          </button>
-          
-          <!-- Outbound Submenu -->
-          <div class="ml-6 space-y-1 overflow-hidden transition-all duration-300" [class.max-h-0]="!isOutboundOpen" [class.max-h-96]="isOutboundOpen">
-            <a routerLink="outbound/pick-pack" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">📤</span>
-              <span>Pick & Pack</span>
-            </a>
-            <a routerLink="outbound/shipping" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">🚛</span>
-              <span>Shipping</span>
-            </a>
-            <a routerLink="outbound/sales-orders" routerLinkActive="bg-yellow-50 text-yellow-700" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm text-gray-600 
-                     hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
-              <span class="text-base">🛒</span>
-              <span>Sales Orders</span>
-            </a>
-          </div>
-        </div>
-
-        <a routerLink="inventory" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📊</span>
-          <span class="font-medium">Inventory</span>
-        </a>
-
-        <a routerLink="reports" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📈</span>
-          <span class="font-medium">Reports</span>
-        </a>
-
-        <div class="pt-4 mt-4 border-t border-gray-200">
-          <a routerLink="settings" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                   hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-            <span class="text-xl group-hover:scale-110 transition-transform duration-200">⚙️</span>
-            <span class="font-medium">Settings</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Inbound Section Menu (แสดงเมื่ออยู่ใน inbound routes) -->
-      <div [ngClass]="{'hidden': !isInInboundSection}">
-        <div class="mb-4">
-          <button (click)="backToMainMenu()" class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
-            <span>←</span>
-            <span>Back to Main Menu</span>
-          </button>
-        </div>
-        
-        <div class="mb-4 pb-4 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 Inbound Operations</h3>
-          <p class="text-sm text-gray-500 px-4">Manage incoming shipments</p>
-        </div>
-
-        <a routerLink="inbound/receive-list" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
-          <span class="font-medium">Receive Items</span>
-        </a>
-
-        <a routerLink="inbound/purchase-orders" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📋</span>
-          <span class="font-medium">Purchase Orders</span>
-        </a>
-
-        <a routerLink="inbound/quality-check" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">✅</span>
-          <span class="font-medium">Quality Check</span>
-        </a>
-      </div>
-
-      <!-- Outbound Section Menu (แสดงเมื่ออยู่ใน outbound routes) -->
-      <div [ngClass]="{'hidden': !isInOutboundSection}">
-        <div class="mb-4">
-          <button (click)="backToMainMenu()" class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
-            <span>←</span>
-            <span>Back to Main Menu</span>
-          </button>
-        </div>
-        
-        <div class="mb-4 pb-4 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-orange-600 px-4">🚚 Outbound Operations</h3>
-          <p class="text-sm text-gray-500 px-4">Handle shipping and orders</p>
-        </div>
-
-        <a routerLink="outbound/pick-pack" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">📤</span>
-          <span class="font-medium">Pick & Pack</span>
-        </a>
-
-        <a routerLink="outbound/shipping" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🚛</span>
-          <span class="font-medium">Shipping</span>
-        </a>
-
-        <a routerLink="outbound/sales-orders" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-          <span class="text-xl group-hover:scale-110 transition-transform duration-200">🛒</span>
-          <span class="font-medium">Sales Orders</span>
-        </a>
-      </div>
+      }
+      }
     </nav>
 
     <!-- Sidebar Footer -->
@@ -269,8 +220,6 @@
 
   <!-- Main Content Area -->
   <main class="flex-1 overflow-hidden">
-
-
     <!-- Other Pages: Show Normal Content -->
     @if (!isDashboard) {
     <div class="p-6">

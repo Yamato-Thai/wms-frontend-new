@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { MainService } from '../service/main.service';
+import { MenuItem } from '../model/mainmenu.model';
+import { TreeNode } from '../model/treenode.model';
+
 @Component({
   selector: 'app-main-layout',
   standalone: true,
@@ -15,31 +19,60 @@ export class MainLayoutComponent implements OnInit {
       keycloak.logout();
     });
   }
+
+  menu: MenuItem[] = [];
+  menuTree: TreeNode[] = [];
+  showMenu: any[] = [];
+  expandedItems = new Set<number>();
+  currentUrl = ''; // เก็บ URL ปัจจุบันไว้
+
   isDashboard = true;
-  isInboundOpen = false;
-  isOutboundOpen = false;
   isInInboundSection = false;
   isInOutboundSection = false;
   fullName: string | null = null;
   userRole: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private mainService: MainService) { }
 
-  ngOnInit() {
-    // ตรวจสอบ URL ปัจจุบันทันทีตอน component initialize
-    this.checkCurrentRoute(this.router.url);
+  ngOnInit(): void {
+    // เก็บ URL ปัจจุบันไว้
+    this.currentUrl = this.router.url;
+    this.checkCurrentRoute(this.currentUrl);
 
     // Listen to route changes
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
+        this.currentUrl = event.url;
         this.checkCurrentRoute(event.url);
+        // ถ้ามี menuTree แล้ว ให้ update showMenu
+        if (this.menuTree.length > 0) {
+          this.updateShowMenuBasedOnRoute(event.url);
+        }
       });
 
     // ดึงชื่อผู้ใช้จาก keycloak
+    this.initializeUserInfo();
+
+    // ดึงข้อมูล menu
+    this.mainService.getMenu().subscribe(data => {
+      this.menu = data;
+      console.log('Menu data:', this.menu);
+      
+      // สร้าง menuTree
+      this.menuTree = this.findMenu(0); // root = 0
+      console.log('MenuTree:', this.menuTree);
+
+      // อัพเดท showMenu ตาม URL ปัจจุบัน
+      this.updateShowMenuBasedOnRoute(this.currentUrl);
+    });
+  }
+
+  private initializeUserInfo(): void {
     import('./../core/guards/keycloak').then(({ keycloak }) => {
       if (keycloak.authenticated && keycloak.tokenParsed) {
         const { given_name, family_name, name, roles, role, preferred_username, groups, realm_access, resource_access } = keycloak.tokenParsed as any;
+        
         if (given_name && family_name) this.fullName = `${given_name} ${family_name}`;
         else if (name) this.fullName = name;
         else this.fullName = preferred_username || null;
@@ -55,6 +88,7 @@ export class MainLayoutComponent implements OnInit {
             .flat();
           mappedRoles = mappedRoles.concat(clientRoles);
         }
+        
         // filter เฉพาะ custom roles ที่ assign เอง
         const ignoreRoles = [
           'default-roles-yamato',
@@ -65,6 +99,7 @@ export class MainLayoutComponent implements OnInit {
           'view-profile'
         ];
         const filteredRoles = mappedRoles.filter(role => !ignoreRoles.includes(role));
+        
         if (filteredRoles.length) {
           this.userRole = filteredRoles
             .map(role => role.charAt(0).toUpperCase() + role.slice(1))
@@ -86,11 +121,11 @@ export class MainLayoutComponent implements OnInit {
   private checkCurrentRoute(url: string) {
     // เช็ค dashboard
     this.isDashboard = url === '/' || url === '/dashboard';
-    
+
     // เช็ค sections
     this.isInInboundSection = url.startsWith('/inbound');
     this.isInOutboundSection = url.startsWith('/outbound');
-    
+
     // Debug log (สามารถลบออกได้)
     console.log('Current URL:', url);
     console.log('isDashboard:', this.isDashboard);
@@ -98,19 +133,52 @@ export class MainLayoutComponent implements OnInit {
     console.log('isInOutboundSection:', this.isInOutboundSection);
   }
 
+  // แยก method สำหรับ update showMenu ตาม route
+  private updateShowMenuBasedOnRoute(url: string): void {
+    if (url.startsWith('/inbound')) {
+      this.showMenu = this.menuTree.filter(item => item.Id == 4);
+      console.log('Inbound menu:', this.showMenu);
+    } else if (url.startsWith('/outbound')) {
+      this.showMenu = this.menuTree.filter(item => item.Id == 5);
+      console.log('Outbound menu:', this.showMenu);
+    } else {
+      this.showMenu = [];
+    }
+  }
+
   navigateTo(route: string) {
     this.router.navigate([route]);
   }
 
-  toggleInboundMenu() {
-    this.isInboundOpen = !this.isInboundOpen;
-  }
-
-  toggleOutboundMenu() {
-    this.isOutboundOpen = !this.isOutboundOpen;
-  }
-
   backToMainMenu() {
+    this.expandedItems.clear(); // ปิด submenu ทั้งหมด
     this.router.navigate(['/dashboard']);
+  }
+
+  toggleExpanded(itemId: number): void {
+    if (this.expandedItems.has(itemId)) {
+      this.expandedItems.delete(itemId);
+    } else {
+      this.expandedItems.add(itemId);
+    }
+  }
+
+  isExpanded(itemId: number): boolean {
+    return this.expandedItems.has(itemId);
+  }
+
+  findMenu(parent: number): TreeNode[] {
+    const tmp = this.menu.filter(a => a.Parent === parent);
+    const arr: TreeNode[] = [];
+
+    tmp.forEach(element => {
+      let node: TreeNode = {
+        ...element,
+        Children: this.findMenu(element.Id)
+      };
+      arr.push(node);
+    });
+
+    return arr;
   }
 }
