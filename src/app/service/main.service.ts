@@ -10,8 +10,7 @@ export class MainService {
   constructor(private http: HttpClient) {}
 
   getMenu(): Observable<MenuItem[]> {
-    return this.http.get<MenuItem[]>('/data/mainmenus.json');
-    console.log('getMenu called');    
+    return this.http.get<MenuItem[]>('/data/mainmenus.json');   
   }
 
 }

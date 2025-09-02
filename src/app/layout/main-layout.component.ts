@@ -1,3 +1,5 @@
+// ...existing code...
+// ...existing code...
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
@@ -14,6 +16,11 @@ import { TreeNode } from '../model/treenode.model';
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent implements OnInit {
+  sidebarOpen = false;
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
   logout() {
     import('./../core/guards/keycloak').then(({ keycloak }) => {
       keycloak.logout();
@@ -49,6 +56,7 @@ export class MainLayoutComponent implements OnInit {
         if (this.menuTree.length > 0) {
           this.updateShowMenuBasedOnRoute(event.url);
         }
+        this.updateCurrentMenuName();
       });
 
     // ดึงชื่อผู้ใช้จาก keycloak
@@ -65,7 +73,28 @@ export class MainLayoutComponent implements OnInit {
 
       // อัพเดท showMenu ตาม URL ปัจจุบัน
       this.updateShowMenuBasedOnRoute(this.currentUrl);
+      this.updateCurrentMenuName();
     });
+  }
+
+  currentMenuName: string | null = null;
+
+  private updateCurrentMenuName(): void {
+    // flatten tree
+    const flatten = (nodes: TreeNode[]): TreeNode[] => {
+      let arr: TreeNode[] = [];
+      for (const node of nodes) {
+        arr.push(node);
+        if (node.Children && node.Children.length > 0) {
+          arr = arr.concat(flatten(node.Children));
+        }
+      }
+      return arr;
+    };
+    const allMenus = flatten(this.menuTree);
+    // หาตัวที่ link ตรงกับ currentUrl (หรือขึ้นต้นด้วย currentUrl)
+    const found = allMenus.find(m => m.Link && this.currentUrl.startsWith(m.Link));
+    this.currentMenuName = found ? found.Name : null;
   }
 
   private initializeUserInfo(): void {
@@ -156,6 +185,7 @@ export class MainLayoutComponent implements OnInit {
   }
 
   toggleExpanded(itemId: number): void {
+ 
     if (this.expandedItems.has(itemId)) {
       this.expandedItems.delete(itemId);
     } else {
