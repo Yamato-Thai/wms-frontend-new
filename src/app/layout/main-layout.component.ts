@@ -1,12 +1,12 @@
-// ...existing code...
-// ...existing code...
+// main-layout.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, Subscription } from 'rxjs';
 import { MainService } from '../service/main.service';
 import { MenuItem } from '../model/mainmenu.model';
 import { TreeNode } from '../model/treenode.model';
+import { AuthService, UserInfo } from '../service/auth.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,177 +15,257 @@ import { TreeNode } from '../model/treenode.model';
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
+  // UI State
   sidebarOpen = false;
+  expandedItems = new Set<number>();
+  currentUrl = '';
+  currentMenuName: string | null = null;
 
-  toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-  logout() {
-    import('./../core/guards/keycloak').then(({ keycloak }) => {
-      keycloak.logout();
-    });
-  }
-
+  // Menu Data
   menu: MenuItem[] = [];
   menuTree: TreeNode[] = [];
   showMenu: any[] = [];
-  expandedItems = new Set<number>();
-  currentUrl = ''; // เก็บ URL ปัจจุบันไว้
 
+  // Route States
   isDashboard = true;
   isInInboundSection = false;
   isInOutboundSection = false;
-  fullName: string | null = null;
+
+  // User Info
+  userInfo: UserInfo = { isAuthenticated: false };
   userRole: string | null = null;
 
-  constructor(private router: Router, private mainService: MainService) { }
+  // Subscriptions
+  private routerSubscription?: Subscription;
+  private authSubscription?: Subscription;
+  private menuSubscription?: Subscription;
+
+  constructor(
+    private router: Router, 
+    private mainService: MainService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // เก็บ URL ปัจจุบันไว้
+    this.initializeComponent();
+  }
+
+  ngOnDestroy(): void {
+    // Cleanup subscriptions
+    this.routerSubscription?.unsubscribe();
+    this.authSubscription?.unsubscribe();
+    this.menuSubscription?.unsubscribe();
+  }
+
+  private initializeComponent(): void {
+    // เก็บ URL ปัจจุบัน
     this.currentUrl = this.router.url;
     this.checkCurrentRoute(this.currentUrl);
 
-    // Listen to route changes
-    this.router.events
+    // Subscribe to route changes
+    this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        this.currentUrl = event.url;
-        this.checkCurrentRoute(event.url);
-        // ถ้ามี menuTree แล้ว ให้ update showMenu
-        if (this.menuTree.length > 0) {
-          this.updateShowMenuBasedOnRoute(event.url);
-        }
-        this.updateCurrentMenuName();
+        this.handleRouteChange(event.url);
       });
 
-    // ดึงชื่อผู้ใช้จาก keycloak
-    this.initializeUserInfo();
+    // Subscribe to user info changes
+    this.authSubscription = this.authService.userInfo$.subscribe({
+      next: (userInfo) => {
+        this.handleUserInfoUpdate(userInfo);
+      },
+      error: (error) => {
+        console.error('Error getting user info:', error);
+      }
+    });
 
-    // ดึงข้อมูล menu
-    this.mainService.getMenu().subscribe(data => {
-      this.menu = data;
-      console.log('Menu data:', this.menu);
-      
-      // สร้าง menuTree
-      this.menuTree = this.findMenu(0); // root = 0
-      console.log('MenuTree:', this.menuTree);
+    // Load menu data
+    this.loadMenuData();
+  }
 
-      // อัพเดท showMenu ตาม URL ปัจจุบัน
-      this.updateShowMenuBasedOnRoute(this.currentUrl);
-      this.updateCurrentMenuName();
+  private handleRouteChange(url: string): void {
+    this.currentUrl = url;
+    this.checkCurrentRoute(url);
+    
+    // Update showMenu if menuTree is loaded
+    if (this.menuTree.length > 0) {
+      this.updateShowMenuBasedOnRoute(url);
+    }
+    
+    this.updateCurrentMenuName();
+  }
+
+  private handleUserInfoUpdate(userInfo: UserInfo): void {
+    this.userInfo = userInfo;
+    
+    if (userInfo.isAuthenticated) {
+      // Extract role information from Keycloak token
+      this.extractUserRole();
+    }
+  }
+
+  private extractUserRole(): void {
+    const keycloak = this.authService.getKeycloak();
+    
+    if (!keycloak?.tokenParsed) {
+      this.userRole = null;
+      return;
+    }
+
+    const token = keycloak.tokenParsed as any;
+    const { roles, role, groups, realm_access, resource_access } = token;
+
+    // Collect all roles
+    let mappedRoles: string[] = [];
+
+    // Add realm roles
+    if (realm_access?.roles?.length) {
+      mappedRoles = mappedRoles.concat(realm_access.roles);
+    }
+
+    // Add client roles
+    if (resource_access) {
+      const clientRoles = Object.values(resource_access)
+        .map((r: any) => r.roles)
+        .flat() as string[];
+      mappedRoles = mappedRoles.concat(clientRoles);
+    }
+
+    // Filter out default Keycloak roles
+    const ignoreRoles = [
+      'default-roles-yamato',
+      'offline_access',
+      'uma_authorization',
+      'manage-account',
+      'manage-account-links',
+      'view-profile'
+    ];
+
+    const filteredRoles = mappedRoles.filter(role => !ignoreRoles.includes(role));
+
+    // Set user role
+    if (filteredRoles.length > 0) {
+      this.userRole = filteredRoles
+        .map(role => role.charAt(0).toUpperCase() + role.slice(1))
+        .join(', ');
+    } else if (groups && Array.isArray(groups) && groups.length > 0) {
+      // Fallback: use group name as role
+      this.userRole = groups[0].replace(/^\//, '');
+    } else if (roles && Array.isArray(roles) && roles.length > 0) {
+      this.userRole = roles[0];
+    } else if (role) {
+      this.userRole = role;
+    } else {
+      this.userRole = 'User';
+    }
+  }
+
+  private loadMenuData(): void {
+    this.menuSubscription = this.mainService.getMenu().subscribe({
+      next: (data) => {
+        this.menu = data;
+        console.log('Menu data loaded:', this.menu);
+        
+        // Build menu tree
+        this.menuTree = this.buildMenuTree(0); // root = 0
+        console.log('Menu tree built:', this.menuTree);
+
+        // Update showMenu based on current URL
+        this.updateShowMenuBasedOnRoute(this.currentUrl);
+        this.updateCurrentMenuName();
+      },
+      error: (error) => {
+        console.error('Error loading menu:', error);
+      }
     });
   }
 
-  currentMenuName: string | null = null;
-
-  private updateCurrentMenuName(): void {
-    // flatten tree
-    const flatten = (nodes: TreeNode[]): TreeNode[] => {
-      let arr: TreeNode[] = [];
-      for (const node of nodes) {
-        arr.push(node);
-        if (node.Children && node.Children.length > 0) {
-          arr = arr.concat(flatten(node.Children));
-        }
-      }
-      return arr;
-    };
-    const allMenus = flatten(this.menuTree);
-    // หาตัวที่ link ตรงกับ currentUrl (หรือขึ้นต้นด้วย currentUrl)
-    const found = allMenus.find(m => m.Link && this.currentUrl.startsWith(m.Link));
-    this.currentMenuName = found ? found.Name : null;
-  }
-
-  private initializeUserInfo(): void {
-    import('./../core/guards/keycloak').then(({ keycloak }) => {
-      if (keycloak.authenticated && keycloak.tokenParsed) {
-        const { given_name, family_name, name, roles, role, preferred_username, groups, realm_access, resource_access } = keycloak.tokenParsed as any;
-        
-        if (given_name && family_name) this.fullName = `${given_name} ${family_name}`;
-        else if (name) this.fullName = name;
-        else this.fullName = preferred_username || null;
-
-        // รวม role ที่ mapping กับ group (realm_access, resource_access)
-        let mappedRoles: string[] = [];
-        if (realm_access?.roles?.length) {
-          mappedRoles = mappedRoles.concat(realm_access.roles);
-        }
-        if (resource_access) {
-          const clientRoles = Object.values(resource_access)
-            .map((r: any) => r.roles)
-            .flat();
-          mappedRoles = mappedRoles.concat(clientRoles);
-        }
-        
-        // filter เฉพาะ custom roles ที่ assign เอง
-        const ignoreRoles = [
-          'default-roles-yamato',
-          'offline_access',
-          'uma_authorization',
-          'manage-account',
-          'manage-account-links',
-          'view-profile'
-        ];
-        const filteredRoles = mappedRoles.filter(role => !ignoreRoles.includes(role));
-        
-        if (filteredRoles.length) {
-          this.userRole = filteredRoles
-            .map(role => role.charAt(0).toUpperCase() + role.slice(1))
-            .join(', ');
-        } else if (groups && Array.isArray(groups) && groups.length > 0) {
-          // fallback: ใช้ชื่อ group เป็น role
-          this.userRole = groups[0].replace(/^\//, '');
-        } else if (roles && Array.isArray(roles) && roles.length > 0) {
-          this.userRole = roles[0];
-        } else if (role) {
-          this.userRole = role;
-        } else {
-          this.userRole = null;
-        }
-      }
-    });
-  }
-
-  private checkCurrentRoute(url: string) {
-    // เช็ค dashboard
+  private checkCurrentRoute(url: string): void {
     this.isDashboard = url === '/' || url === '/dashboard';
-
-    // เช็ค sections
     this.isInInboundSection = url.startsWith('/inbound');
     this.isInOutboundSection = url.startsWith('/outbound');
 
-    // Debug log (สามารถลบออกได้)
-    console.log('Current URL:', url);
-    console.log('isDashboard:', this.isDashboard);
-    console.log('isInInboundSection:', this.isInInboundSection);
-    console.log('isInOutboundSection:', this.isInOutboundSection);
+    console.log('Route check:', { url, isDashboard: this.isDashboard, isInInboundSection: this.isInInboundSection, isInOutboundSection: this.isInOutboundSection });
   }
 
-  // แยก method สำหรับ update showMenu ตาม route
   private updateShowMenuBasedOnRoute(url: string): void {
     if (url.startsWith('/inbound')) {
-      this.showMenu = this.menuTree.filter(item => item.Id == 4);
-      console.log('Inbound menu:', this.showMenu);
+      this.showMenu = this.menuTree.filter(item => item.Id === 4);
+      console.log('Showing inbound menu:', this.showMenu);
     } else if (url.startsWith('/outbound')) {
-      this.showMenu = this.menuTree.filter(item => item.Id == 5);
-      console.log('Outbound menu:', this.showMenu);
+      this.showMenu = this.menuTree.filter(item => item.Id === 5);
+      console.log('Showing outbound menu:', this.showMenu);
     } else {
       this.showMenu = [];
     }
   }
 
-  navigateTo(route: string) {
+  private updateCurrentMenuName(): void {
+    const allMenus = this.flattenMenuTree(this.menuTree);
+    const foundMenu = allMenus.find(menu => 
+      menu.Link && this.currentUrl.startsWith(menu.Link)
+    );
+    this.currentMenuName = foundMenu ? foundMenu.Name : null;
+  }
+
+  private flattenMenuTree(nodes: TreeNode[]): TreeNode[] {
+    let result: TreeNode[] = [];
+    for (const node of nodes) {
+      result.push(node);
+      if (node.Children && node.Children.length > 0) {
+        result = result.concat(this.flattenMenuTree(node.Children));
+      }
+    }
+    return result;
+  }
+
+  private buildMenuTree(parentId: number): TreeNode[] {
+    const children = this.menu.filter(item => item.Parent === parentId);
+    const treeNodes: TreeNode[] = [];
+
+    children.forEach(item => {
+      const node: TreeNode = {
+        ...item,
+        Children: this.buildMenuTree(item.Id)
+      };
+      treeNodes.push(node);
+    });
+
+    return treeNodes;
+  }
+
+  // Public Methods for Template
+  get fullName(): string {
+    if (this.userInfo.fullName) return this.userInfo.fullName;
+    if (this.userInfo.givenName && this.userInfo.familyName) {
+      return `${this.userInfo.givenName} ${this.userInfo.familyName}`;
+    }
+    return this.userInfo.username || 'User';
+  }
+
+  get isAuthenticated(): boolean {
+    return this.userInfo.isAuthenticated ?? false;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  navigateTo(route: string): void {
     this.router.navigate([route]);
   }
 
-  backToMainMenu() {
-    this.expandedItems.clear(); // ปิด submenu ทั้งหมด
+  backToMainMenu(): void {
+    this.expandedItems.clear();
     this.router.navigate(['/dashboard']);
   }
 
   toggleExpanded(itemId: number): void {
- 
     if (this.expandedItems.has(itemId)) {
       this.expandedItems.delete(itemId);
     } else {
@@ -195,20 +275,5 @@ export class MainLayoutComponent implements OnInit {
 
   isExpanded(itemId: number): boolean {
     return this.expandedItems.has(itemId);
-  }
-
-  findMenu(parent: number): TreeNode[] {
-    const tmp = this.menu.filter(a => a.Parent === parent);
-    const arr: TreeNode[] = [];
-
-    tmp.forEach(element => {
-      let node: TreeNode = {
-        ...element,
-        Children: this.findMenu(element.Id)
-      };
-      arr.push(node);
-    });
-
-    return arr;
   }
 }

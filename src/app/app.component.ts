@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+// app.component.ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService, UserInfo } from './service/auth.service';
+import { Subscription } from 'rxjs';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { keycloak } from './core/guards/keycloak';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +11,38 @@ import { keycloak } from './core/guards/keycloak';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'wms-frontend-new';
-  get fullName(): string | null {
-    if (keycloak.authenticated && keycloak.tokenParsed) {
-      const { given_name, family_name, name } = keycloak.tokenParsed as any;
-      if (given_name && family_name) return `${given_name} ${family_name}`;
-      if (name) return name;
+  userInfo: UserInfo = {};
+  private subscription?: Subscription;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.subscription = this.authService.userInfo$.subscribe(
+      userInfo => {
+        this.userInfo = userInfo;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
+
+  get fullName(): string {
+    if (this.userInfo.fullName) return this.userInfo.fullName;
+    if (this.userInfo.givenName && this.userInfo.familyName) {
+      return `${this.userInfo.givenName} ${this.userInfo.familyName}`;
     }
-    return null;
+    return this.userInfo.username || 'User';
+  }
+
+  get isAuthenticated(): boolean {
+    return this.userInfo.isAuthenticated ?? false;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }
