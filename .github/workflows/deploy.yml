@@ -1,4 +1,4 @@
-name: Test Build Without Secrets
+name: Simple Self-Hosted Build
 
 on:
   push:
@@ -14,8 +14,6 @@ jobs:
       # 1) Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       # 2) Setup Node.js
       - name: Setup Node.js
@@ -23,24 +21,17 @@ jobs:
         with:
           node-version: '20'
 
-      # 3) Check Node.js & NPM version
-      - name: Check Node.js & NPM version
-        shell: cmd
-        run: |
-          node --version
-          npm --version
-
-      # 4) Install dependencies
+      # 3) Install dependencies
       - name: Install dependencies
         shell: cmd
         run: npm ci --prefer-offline --no-audit
 
-      # 5) Build Angular
+      # 4) Build Angular
       - name: Build Angular
         shell: cmd
-        run: npm run build -- --configuration production --aot --build-optimizer
+        run: npm run build -- --configuration production
 
-      # 6) Verify build output
+      # 5) Verify build output
       - name: Verify build output
         shell: cmd
         run: |
@@ -48,15 +39,10 @@ jobs:
             echo Build successful
           ) else (
             echo Build failed
-            exit 1
+            exit /b 1
           )
 
-      # 7) Create deployment package
-      - name: Create deployment package
+      # 6) Zip output
+      - name: Zip build
         shell: cmd
         run: powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'deployment.zip' -Force"
-
-      # 8) Show package info
-      - name: Package information
-        shell: cmd
-        run: powershell -Command "Get-Item 'deployment.zip' | Format-List Name, Length, CreationTime"
