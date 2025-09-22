@@ -23,44 +23,40 @@ jobs:
         with:
           node-version: '20'
 
-      # 3) Check Node.js and npm version
+      # 3) Check Node.js & NPM version
       - name: Check Node.js & NPM version
-        shell: pwsh
+        shell: cmd
         run: |
           node --version
           npm --version
 
       # 4) Install dependencies
       - name: Install dependencies
-        shell: pwsh
+        shell: cmd
         run: npm ci --prefer-offline --no-audit
 
       # 5) Build Angular
       - name: Build Angular
-        shell: pwsh
+        shell: cmd
         run: npm run build -- --configuration production --aot --build-optimizer
 
       # 6) Verify build output
       - name: Verify build output
-        shell: pwsh
+        shell: cmd
         run: |
-          if (Test-Path "dist/wms-frontend-new/browser") {
-              Write-Output "Build successful"
-          } else {
-              Write-Error "Build failed - dist folder not found"
-              exit 1
-          }
+          if exist dist\wms-frontend-new\browser (
+            echo Build successful
+          ) else (
+            echo Build failed
+            exit 1
+          )
 
       # 7) Create deployment package
       - name: Create deployment package
-        shell: pwsh
-        run: |
-          Compress-Archive -Path "dist/wms-frontend-new/browser/*" -DestinationPath "deployment.zip" -Force
+        shell: cmd
+        run: powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'deployment.zip' -Force"
 
       # 8) Show package info
       - name: Package information
-        shell: pwsh
-        run: |
-          $zip = Get-Item "deployment.zip"
-          Write-Output "Package size: $($zip.Length) bytes"
-          Write-Output "Package created at: $($zip.CreationTime)"
+        shell: cmd
+        run: powershell -Command "Get-Item 'deployment.zip' | Format-List Name, Length, CreationTime"
