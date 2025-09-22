@@ -33,9 +33,9 @@ jobs:
         with:
           host: ${{ secrets.WINDOWS_HOST }}
           username: ${{ secrets.WINDOWS_USER }}
-          password: ${{ secrets.WINDOWS_PASS }}
+          key: ${{ secrets.WINDOWS_KEY }}      # ใช้ private key แทน password
           source: "dist/wms-frontend-new/browser*"
-          target: "D:/non"
+          target: "D:/non/AutoDeploy"
 
       # 5) ย้ายไฟล์จาก D:\non → C:\inetpub\wwwroot\angular-app\
       - name: Move to IIS wwwroot
@@ -43,7 +43,7 @@ jobs:
         with:
           host: ${{ secrets.WINDOWS_HOST }}
           username: ${{ secrets.WINDOWS_USER }}
-          password: ${{ secrets.WINDOWS_PASS }}
+          key: ${{ secrets.WINDOWS_KEY }}      # ใช้ private key แทน password
           script: |
             powershell -Command "
               Remove-Item -Recurse -Force 'C:\inetpub\wwwroot\WMS_Pro\*';
