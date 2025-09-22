@@ -1,0 +1,51 @@
+name: Deploy Angular to IIS
+
+on:
+  push:
+    branches:
+      - main   # รันเมื่อ push ไป main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) ดึงโค้ด
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2) ติดตั้ง Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3) ติดตั้ง dependency + build Angular
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular
+        run: npm run build -- --configuration production
+
+      # 4) Copy ไฟล์ dist ไปยัง D:\non บน server
+      - name: Copy dist to staging folder (D:\non\AutoDeploy)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.WINDOWS_HOST }}
+          username: ${{ secrets.WINDOWS_USER }}
+          password: ${{ secrets.WINDOWS_PASS }}
+          source: "dist/wms-frontend-new/browser*"
+          target: "D:/non"
+
+      # 5) ย้ายไฟล์จาก D:\non → C:\inetpub\wwwroot\angular-app\
+      - name: Move to IIS wwwroot
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.WINDOWS_HOST }}
+          username: ${{ secrets.WINDOWS_USER }}
+          password: ${{ secrets.WINDOWS_PASS }}
+          script: |
+            powershell -Command "
+              Remove-Item -Recurse -Force 'C:\inetpub\wwwroot\WMS_Pro\*';
+              Copy-Item -Path 'D:\non\AutoDeploy*' -Destination 'C:\inetpub\wwwroot\WMS_Pro\' -Recurse -Force
+            "
