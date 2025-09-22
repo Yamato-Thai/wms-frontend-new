@@ -22,5 +22,8 @@ export const routes: Routes = [
       },
       // เพิ่ม feature อื่น ๆ
     ]
+  },{
+    path: 'template',
+    loadComponent: () => import('./template/template.component').then(m => m.TemplateComponent)
   }
 ];
