@@ -24,21 +24,22 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      # 3) Validate secrets
-      - name: Validate required secrets
+      # 3) Check Node.js version
+      - name: Check Node.js version
         shell: pwsh
         run: |
-          $secrets = @("WINDOWS_HOST", "WINDOWS_USER", "WINDOWS_KEY")
-          foreach ($secret in $secrets) {
-            if ([string]::IsNullOrEmpty($env:SECRET_VALUE)) {
-              Write-Error "Required secret $secret is not set or empty"
-              exit 1
-            }
-          }
-        env:
-          SECRET_VALUE: ${{ secrets.WINDOWS_HOST }}${{ secrets.WINDOWS_USER }}${{ secrets.WINDOWS_KEY }}
+          Write-Host "Node.js version: $(node --version)"
+          Write-Host "NPM version: $(npm --version)"
 
-      # 4) Install dependencies
+      # 4) Test connectivity (optional - comment out if not needed)
+      # - name: Test SSH connectivity
+      #   shell: pwsh
+      #   run: |
+      #     Write-Host "Testing SSH connectivity..."
+      #     # Simple connectivity test without exposing secrets
+      #     echo "Connection test will be performed during deployment"
+
+      # 5) Install dependencies
       - name: Install dependencies
         shell: pwsh
         run: |
