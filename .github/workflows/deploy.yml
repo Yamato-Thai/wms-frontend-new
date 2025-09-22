@@ -3,49 +3,60 @@ name: Deploy Angular to IIS
 on:
   push:
     branches:
-      - master   # รันเมื่อ push ไป master
+      - master
 
 jobs:
   build-and-deploy:
     runs-on: self-hosted
 
     steps:
-      # 1) ดึงโค้ด
+      # 1) Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2) ติดตั้ง Node.js
+      # 2) Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3) ติดตั้ง dependency + build Angular
+      # 3) Install dependencies
       - name: Install dependencies
         run: npm install
+        shell: pwsh
 
+      # 4) Build Angular
       - name: Build Angular
         run: npm run build -- --configuration production
+        shell: pwsh
 
-      # 4) Copy ไฟล์ dist ไปยัง D:\non บน server
+      # 5) List dist folder (Debug)
+      - name: List dist folder
+        run: dir dist/wms-frontend-new/browser
+        shell: pwsh
+
+      # 6) Copy dist to staging folder on server
       - name: Copy dist to staging folder (D:\non\AutoDeploy)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.WINDOWS_HOST }}
           username: ${{ secrets.WINDOWS_USER }}
-          key: ${{ secrets.WINDOWS_KEY }}      # ใช้ private key แทน password
-          source: "dist/wms-frontend-new/browser*"
+          key: ${{ secrets.WINDOWS_KEY }}
+          source: "dist/wms-frontend-new/browser/*"
           target: "D:/non/AutoDeploy"
 
-      # 5) ย้ายไฟล์จาก D:\non → C:\inetpub\wwwroot\angular-app\
+      # 7) Move files to IIS wwwroot
       - name: Move to IIS wwwroot
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.WINDOWS_HOST }}
           username: ${{ secrets.WINDOWS_USER }}
-          key: ${{ secrets.WINDOWS_KEY }}      # ใช้ private key แทน password
+          key: ${{ secrets.WINDOWS_KEY }}
           script: |
-            powershell -Command "
-              Remove-Item -Recurse -Force 'C:\inetpub\wwwroot\WMS_Pro\*';
-              Copy-Item -Path 'D:\non\AutoDeploy*' -Destination 'C:\inetpub\wwwroot\WMS_Pro\' -Recurse -Force
+            pwsh -Command "
+              if (-Not (Test-Path 'C:\inetpub\wwwroot\WMS_Pro')) {
+                New-Item -ItemType Directory -Path 'C:\inetpub\wwwroot\WMS_Pro'
+              }
+              Remove-Item -Recurse -Force 'C:\inetpub\wwwroot\WMS_Pro\*'
+              Copy-Item -Path 'D:\non\AutoDeploy\*' -Destination 'C:\inetpub\wwwroot\WMS_Pro\' -Recurse -Force
             "
