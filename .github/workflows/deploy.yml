@@ -9,7 +9,7 @@ on:
 jobs:
   build-only:
     runs-on: self-hosted
-    
+
     steps:
       # 1) Checkout repository
       - name: Checkout code
@@ -17,60 +17,46 @@ jobs:
         with:
           fetch-depth: 1
 
-      # 2) Setup Node.js with caching
+      # 2) Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      # 3) Check Node.js version
-      - name: Check Node.js version
-        shell: pwsh
+      # 3) Check Node.js and npm version
+      - name: Check Node.js & NPM version
+        shell: cmd
         run: |
-          Write-Host "Node.js version: $(node --version)"
-          Write-Host "NPM version: $(npm --version)"
+          node --version
+          npm --version
 
       # 4) Install dependencies
       - name: Install dependencies
-        shell: pwsh
-        run: |
-          Write-Host "Installing npm dependencies..."
-          npm ci --prefer-offline --no-audit
+        shell: cmd
+        run: npm ci --prefer-offline --no-audit
 
       # 5) Build Angular
       - name: Build Angular
-        shell: pwsh
-        run: |
-          Write-Host "Building Angular application..."
-          npm run build -- --configuration production --aot --build-optimizer
-          
+        shell: cmd
+        run: npm run build -- --configuration production --aot --build-optimizer
+
       # 6) Verify build output
       - name: Verify build output
-        shell: pwsh
+        shell: cmd
         run: |
-          if (Test-Path "dist/wms-frontend-new/browser") {
-            Write-Host "Build successful. Contents:"
-            Get-ChildItem -Path "dist/wms-frontend-new/browser" -Recurse | Select-Object Name, Length
-          } else {
-            Write-Error "Build failed - dist folder not found"
+          if exist dist\wms-frontend-new\browser (
+            echo Build successful
+          ) else (
+            echo Build failed
             exit 1
-          }
+          )
 
       # 7) Create deployment package
       - name: Create deployment package
-        shell: pwsh
-        run: |
-          Write-Host "Creating deployment package..."
-          Compress-Archive -Path "dist/wms-frontend-new/browser/*" -DestinationPath "deployment.zip" -Force
-          Write-Host "Package created successfully"
-          
+        shell: cmd
+        run: powershell Compress-Archive -Path "dist\wms-frontend-new\browser\*" -DestinationPath "deployment.zip" -Force
+
       # 8) Show package info
       - name: Package information
-        shell: pwsh
-        run: |
-          if (Test-Path "deployment.zip") {
-            $zip = Get-Item "deployment.zip"
-            Write-Host "Package size: $($zip.Length) bytes"
-            Write-Host "Package created at: $($zip.CreationTime)"
-          }
+        shell: cmd
+        run: powershell -Command "Get-Item deployment.zip | Format-List Name, Length, CreationTime"
