@@ -3,7 +3,7 @@ name: Deploy Angular to IIS
 on:
   push:
     branches:
-      - main   # รันเมื่อ push ไป main
+      - master   # รันเมื่อ push ไป master
 
 jobs:
   build-and-deploy:
