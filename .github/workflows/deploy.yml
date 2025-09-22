@@ -1,13 +1,13 @@
-name: Deploy Angular to IIS
+name: Test Build Without Secrets
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-only:
     runs-on: self-hosted
     
     steps:
@@ -31,15 +31,7 @@ jobs:
           Write-Host "Node.js version: $(node --version)"
           Write-Host "NPM version: $(npm --version)"
 
-      # 4) Test connectivity (optional - comment out if not needed)
-      # - name: Test SSH connectivity
-      #   shell: pwsh
-      #   run: |
-      #     Write-Host "Testing SSH connectivity..."
-      #     # Simple connectivity test without exposing secrets
-      #     echo "Connection test will be performed during deployment"
-
-      # 5) Install dependencies
+      # 4) Install dependencies
       - name: Install dependencies
         shell: pwsh
         run: |
@@ -71,110 +63,14 @@ jobs:
         run: |
           Write-Host "Creating deployment package..."
           Compress-Archive -Path "dist/wms-frontend-new/browser/*" -DestinationPath "deployment.zip" -Force
-
-      # 8) Upload deployment package
-      - name: Upload deployment package
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.WINDOWS_HOST }}
-          username: ${{ secrets.WINDOWS_USER }}
-          key: ${{ secrets.WINDOWS_KEY }}
-          source: "deployment.zip"
-          target: "D:/non/AutoDeploy/"
-          overwrite: true
-
-      # 9) Deploy to IIS with error handling
-      - name: Deploy to IIS wwwroot
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.WINDOWS_HOST }}
-          username: ${{ secrets.WINDOWS_USER }}
-          key: ${{ secrets.WINDOWS_KEY }}
-          timeout: 300s
-          script: |
-            pwsh -Command "
-              try {
-                Write-Host 'Starting deployment process...'
-                
-                # Set error action preference
-                $ErrorActionPreference = 'Stop'
-                
-                # Define paths
-                $stagingPath = 'D:\non\AutoDeploy'
-                $deployPath = 'C:\inetpub\wwwroot\WMS_Pro'
-                $backupPath = 'C:\inetpub\wwwroot\WMS_Pro_backup_' + (Get-Date -Format 'yyyyMMdd_HHmmss')
-                
-                # Create backup of existing deployment
-                if (Test-Path '$deployPath') {
-                  Write-Host 'Creating backup of existing deployment...'
-                  Copy-Item -Path '$deployPath' -Destination '$backupPath' -Recurse -Force
-                }
-                
-                # Ensure target directory exists
-                if (-Not (Test-Path '$deployPath')) {
-                  Write-Host 'Creating deployment directory...'
-                  New-Item -ItemType Directory -Path '$deployPath' -Force
-                }
-                
-                # Extract and deploy
-                Write-Host 'Extracting deployment package...'
-                Expand-Archive -Path '$stagingPath\deployment.zip' -DestinationPath '$stagingPath\extracted' -Force
-                
-                # Clear existing files
-                Write-Host 'Clearing existing deployment files...'
-                Get-ChildItem -Path '$deployPath' -Recurse | Remove-Item -Force -Recurse
-                
-                # Copy new files
-                Write-Host 'Copying new files to deployment directory...'
-                Copy-Item -Path '$stagingPath\extracted\*' -Destination '$deployPath' -Recurse -Force
-                
-                # Cleanup
-                Write-Host 'Cleaning up temporary files...'
-                Remove-Item -Path '$stagingPath\deployment.zip' -Force -ErrorAction SilentlyContinue
-                Remove-Item -Path '$stagingPath\extracted' -Recurse -Force -ErrorAction SilentlyContinue
-                
-                # Verify deployment
-                if (Test-Path '$deployPath\index.html') {
-                  Write-Host 'Deployment completed successfully!'
-                  
-                  # Remove old backup (keep only latest)
-                  Get-ChildItem -Path 'C:\inetpub\wwwroot\WMS_Pro_backup_*' | 
-                    Sort-Object CreationTime -Descending | 
-                    Select-Object -Skip 1 | 
-                    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-                } else {
-                  throw 'Deployment verification failed - index.html not found'
-                }
-                
-              } catch {
-                Write-Error 'Deployment failed: ' + $_.Exception.Message
-                
-                # Restore from backup if available
-                if (Test-Path '$backupPath') {
-                  Write-Host 'Restoring from backup...'
-                  Remove-Item -Path '$deployPath' -Recurse -Force -ErrorAction SilentlyContinue
-                  Move-Item -Path '$backupPath' -Destination '$deployPath' -Force
-                }
-                
-                exit 1
-              }
-            "
-
-      # 10) Health check
-      - name: Health check
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.WINDOWS_HOST }}
-          username: ${{ secrets.WINDOWS_USER }}
-          key: ${{ secrets.WINDOWS_KEY }}
-          script: |
-            pwsh -Command "
-              $deployPath = 'C:\inetpub\wwwroot\WMS_Pro'
-              if (Test-Path '$deployPath\index.html') {
-                Write-Host 'Health check passed - Application files are in place'
-                Get-ChildItem -Path '$deployPath' | Select-Object Name, Length, LastWriteTime
-              } else {
-                Write-Error 'Health check failed - index.html not found'
-                exit 1
-              }
-            "
+          Write-Host "Package created successfully"
+          
+      # 8) Show package info
+      - name: Package information
+        shell: pwsh
+        run: |
+          if (Test-Path "deployment.zip") {
+            $zip = Get-Item "deployment.zip"
+            Write-Host "Package size: $($zip.Length) bytes"
+            Write-Host "Package created at: $($zip.CreationTime)"
+          }
