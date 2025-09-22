@@ -10,7 +10,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./main/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
         path: 'inbound',

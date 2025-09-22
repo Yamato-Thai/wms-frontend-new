@@ -23,7 +23,7 @@ export class DashboardComponent {
         this.isDashboard = event.url === '/' || event.url === '/dashboard';
       });
     // ดึงชื่อผู้ใช้จาก keycloak
-    import('./../core/guards/keycloak').then(({ keycloak }) => {
+    import('./../../core/guards/keycloak').then(({ keycloak }) => {
       if (keycloak.authenticated && keycloak.tokenParsed) {
         const { given_name, family_name, name } = keycloak.tokenParsed as any;
         if (given_name && family_name) this.fullName = `${given_name} ${family_name}`;
