@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-only:
-    runs-on: self-hosted
+    runs-on: [self-hosted,RUNNER37]
 
     steps:
       # 1) Checkout repository
