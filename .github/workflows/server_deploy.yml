@@ -29,39 +29,45 @@ jobs:
       - name: Build Angular
         run: npm run build -- --configuration production
 
-      - name: Backup old IIS files
+      - name: Backup old IIS files with timestamp
         shell: powershell
         run: |
-          $webRoot = "C:\inetpub\wwwroot\WMS_Pro"
+          $webRoot   = "C:\inetpub\wwwroot\WMS_Pro"
           $backupDir = "C:\inetpub\wwwroot\WMS_Pro_Backup"
+          $timestamp = Get-Date -Format "yyyy-MM-dd-HHmm"
+          $currentBackup = Join-Path $backupDir $timestamp
 
           Write-Output "Preparing backup..."
           if (-Not (Test-Path $backupDir)) {
             New-Item -ItemType Directory -Path $backupDir | Out-Null
-            Write-Output "Backup folder created: $backupDir"
+            Write-Output "Backup root folder created: $backupDir"
           }
 
-          # ลบไฟล์ backup เก่าออก
-          Get-ChildItem -Path $backupDir -Recurse | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-          Write-Output "Old backup cleared."
-
-          # ย้ายไฟล์ปัจจุบันไป backup
           if (Test-Path $webRoot) {
-            Get-ChildItem -Path $webRoot -Recurse | Move-Item -Destination $backupDir -Force
-            Write-Output "Old web files moved to backup."
+            New-Item -ItemType Directory -Path $currentBackup | Out-Null
+            Copy-Item -Path (Join-Path $webRoot '*') -Destination $currentBackup -Recurse -Force
+            Write-Output "Old web files copied to backup folder: $currentBackup"
           } else {
             Write-Output "Web root does not exist: $webRoot"
           }
 
-      - name: Deploy new build to IIS
+      - name: Deploy new build to IIS (exclude web.config)
         shell: powershell
         run: |
-          $source = "dist\wms-frontend-new\*"
+          $source = "dist\wms-frontend-new\browser\*"
           $destination = "C:\inetpub\wwwroot\WMS_Pro"
 
-          Write-Output "Deploying new build..."
-          Copy-Item $source -Destination $destination -Recurse -Force
-          Write-Output "New build deployed to $destination."
+          Write-Output "Deploying new build (without web.config)..."
+          Get-ChildItem $source -Recurse | ForEach-Object {
+            if ($_.Name -ne "web.config") {
+              $destPath = Join-Path $destination ($_.FullName.Substring($source.Length).TrimStart('\'))
+              if (-Not (Test-Path (Split-Path $destPath))) {
+                New-Item -ItemType Directory -Force -Path (Split-Path $destPath) | Out-Null
+              }
+              Copy-Item $_.FullName -Destination $destPath -Force
+            }
+          }
+          Write-Output "New build deployed to $destination (web.config preserved)."
 
       - name: Restart IIS site
         shell: powershell
@@ -70,3 +76,4 @@ jobs:
           Restart-WebAppPool -Name "WMS PRO"
           Restart-WebItem 'IIS:\Sites\WMS PRO'
           Write-Output "IIS site 'WMS PRO' restarted successfully."
+
