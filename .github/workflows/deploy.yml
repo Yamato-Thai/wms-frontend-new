@@ -71,9 +71,11 @@ jobs:
       - name: Zip build
         shell: cmd
         run: |
-          set ZIP_DEST=C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist\zip
+          set REPO_DIR=C:\Users\tanon\Documents\GitHub\wms-frontend-new
+          set ZIP_DEST=%REPO_DIR%\dist\zip
           if not exist "%ZIP_DEST%" mkdir "%ZIP_DEST%"
-          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath '%ZIP_DEST%\deployment.zip' -Force"
+          cd "%REPO_DIR%"
+          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new/browser/*' -DestinationPath '%ZIP_DEST%\deployment.zip' -Force"
           echo === Archive created ===
           dir "%ZIP_DEST%"
             
