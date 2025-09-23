@@ -51,23 +51,26 @@ jobs:
             Write-Output "Web root does not exist: $webRoot"
           }
 
-      - name: Deploy new build to IIS (exclude web.config)
+      - name: Deploy new build to IIS (overwrite all except web.config)
         shell: powershell
         run: |
           $source = "dist\wms-frontend-new\browser\*"
           $destination = "C:\inetpub\wwwroot\WMS_Pro"
-
-          Write-Output "Deploying new build (without web.config)..."
-          Get-ChildItem $source -Recurse | ForEach-Object {
-            if ($_.Name -ne "web.config") {
-              $destPath = Join-Path $destination ($_.FullName.Substring($source.Length).TrimStart('\'))
-              if (-Not (Test-Path (Split-Path $destPath))) {
-                New-Item -ItemType Directory -Force -Path (Split-Path $destPath) | Out-Null
-              }
-              Copy-Item $_.FullName -Destination $destPath -Force
-            }
-          }
+      
+          Write-Output "Cleaning old files (except web.config)..."
+      
+          # ลบไฟล์เดิมทั้งหมดใน web root ยกเว้น web.config
+          Get-ChildItem -Path $destination -Recurse -File | Where-Object { $_.Name -ne "web.config" } | Remove-Item -Force
+      
+          # ลบโฟลเดอร์เปล่าที่เหลือ
+          Get-ChildItem -Path $destination -Recurse -Directory | Where-Object { $_.GetFileSystemInfos().Count -eq 0 } | Remove-Item -Force
+      
+          Write-Output "Deploying new build..."
+          # คัดลอกไฟล์ build ใหม่ทั้งหมด (รวมโฟลเดอร์ย่อย) ไป web root
+          Copy-Item -Path $source -Destination $destination -Recurse -Force
+      
           Write-Output "New build deployed to $destination (web.config preserved)."
+
 
       - name: Restart IIS site
         shell: powershell
