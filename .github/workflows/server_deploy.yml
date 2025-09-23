@@ -1,0 +1,72 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: server_deploy
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, YUTCW01]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular
+        run: npm run build -- --configuration production
+
+      - name: Backup old IIS files
+        shell: powershell
+        run: |
+          $webRoot = "C:\inetpub\wwwroot\WMS_Pro"
+          $backupDir = "C:\inetpub\wwwroot\WMS_Pro_Backup"
+
+          Write-Output "Preparing backup..."
+          if (-Not (Test-Path $backupDir)) {
+            New-Item -ItemType Directory -Path $backupDir | Out-Null
+            Write-Output "Backup folder created: $backupDir"
+          }
+
+          # ลบไฟล์ backup เก่าออก
+          Get-ChildItem -Path $backupDir -Recurse | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Output "Old backup cleared."
+
+          # ย้ายไฟล์ปัจจุบันไป backup
+          if (Test-Path $webRoot) {
+            Get-ChildItem -Path $webRoot -Recurse | Move-Item -Destination $backupDir -Force
+            Write-Output "Old web files moved to backup."
+          } else {
+            Write-Output "Web root does not exist: $webRoot"
+          }
+
+      - name: Deploy new build to IIS
+        shell: powershell
+        run: |
+          $source = "dist\wms-frontend-new\*"
+          $destination = "C:\inetpub\wwwroot\WMS_Pro"
+
+          Write-Output "Deploying new build..."
+          Copy-Item $source -Destination $destination -Recurse -Force
+          Write-Output "New build deployed to $destination."
+
+      - name: Restart IIS site
+        shell: powershell
+        run: |
+          Import-Module WebAdministration
+          Restart-WebAppPool -Name "WMS PRO"
+          Restart-WebItem 'IIS:\Sites\WMS PRO'
+          Write-Output "IIS site 'WMS PRO' restarted successfully."
