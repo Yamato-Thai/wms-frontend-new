@@ -1,4 +1,4 @@
-name: Simple Self-Hosted Build
+name: Simple Self-Hosted Build (Debug)
 
 on:
   push:
@@ -14,27 +14,52 @@ jobs:
       # 1) Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Debug after checkout
+        shell: cmd
+        run: |
+          echo === After Checkout ===
+          dir
 
       # 2) Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+      - name: Debug Node.js version
+        shell: cmd
+        run: |
+          echo === Node & NPM Version ===
+          node -v
+          npm -v
 
       # 3) Install dependencies
       - name: Install dependencies
         shell: cmd
-        run: npm ci --prefer-offline --no-audit
+        run: |
+          echo === Before npm ci ===
+          dir
+          npm ci --prefer-offline --no-audit
+          echo === After npm ci ===
+          dir node_modules
 
       # 4) Build Angular
       - name: Build Angular
         shell: cmd
-        run: npm run build -- --configuration production
+        run: |
+          echo === Before build ===
+          dir
+          npm run build -- --configuration production
+          echo === After build ===
+          dir dist
 
       # 5) Verify build output
       - name: Verify build output
         shell: cmd
         run: |
+          echo === Checking dist folder ===
+          dir dist
+          dir dist\wms-frontend-new
+          dir dist\wms-frontend-new\browser
           if exist dist\wms-frontend-new\browser (
             echo Build successful
           ) else (
@@ -45,4 +70,9 @@ jobs:
       # 6) Zip output
       - name: Zip build
         shell: cmd
-        run: powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'deployment.zip' -Force"
+        run: |
+          echo === Zipping build ===
+          dir dist\wms-frontend-new\browser
+          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'deployment.zip' -Force"
+          echo === Deployment.zip created ===
+          dir
