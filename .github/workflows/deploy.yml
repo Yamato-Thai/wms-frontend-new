@@ -67,7 +67,7 @@ jobs:
             exit /b 1
           )
 
-       # 6) Zip output - เก็บใน C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist
+       # 6) Zip output - เก็บใน C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist c
       - name: Zip build
         shell: cmd
         run: |
