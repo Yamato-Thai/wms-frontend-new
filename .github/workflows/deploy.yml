@@ -67,17 +67,28 @@ jobs:
             exit /b 1
           )
 
-      # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
+       # 6) Zip output - เก็บใน C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist
       - name: Zip build
         shell: cmd
         run: |
           echo === Zipping build ===
           dir dist\wms-frontend-new\browser
-          cd dist\wms-frontend-new\browser
-          tar -czf ..\..\..\deployment.tar.gz *
-          cd ..\..\..
+          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist\deployment.zip' -Force"
           echo === Archive created ===
-          dir
+          dir "C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist"
+            
+
+      # # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
+      # - name: Zip build
+      #   shell: cmd
+      #   run: |
+      #     echo === Zipping build ===
+      #     dir dist\wms-frontend-new\browser
+      #     cd dist\wms-frontend-new\browser
+      #     tar -czf ..\..\..\deployment.tar.gz *
+      #     cd ..\..\..
+      #     echo === Archive created ===
+      #     dir
 
       # Alternative: ใช้ 7-Zip (ถ้าติดตั้งแล้ว)
       # - name: Zip build (7-Zip)
@@ -88,3 +99,9 @@ jobs:
       #     "C:\Program Files\7-Zip\7z.exe" a -tzip deployment.zip dist\wms-frontend-new\browser\*
       #     echo === Deployment.zip created ===
       #     dir
+
+
+
+
+
+    
