@@ -71,11 +71,11 @@ jobs:
       - name: Zip build
         shell: cmd
         run: |
-          echo === Zipping build ===
-          dir dist\wms-frontend-new\browser
-          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist\deployment.zip' -Force"
+          set ZIP_DEST=C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist\zip
+          if not exist "%ZIP_DEST%" mkdir "%ZIP_DEST%"
+          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath '%ZIP_DEST%\deployment.zip' -Force"
           echo === Archive created ===
-          dir "C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist"
+          dir "%ZIP_DEST%"
             
 
       # # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
