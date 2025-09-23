@@ -1,4 +1,4 @@
-name: Simple Self-Hosted Build (Debug)
+name: Test Build on GitHub-hosted (Windows)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-only:
-    runs-on: self-hosted
+    runs-on: windows-latest  # เปลี่ยนจาก self-hosted เพื่อเทส
 
     steps:
       # 1) Checkout repository
@@ -67,12 +67,24 @@ jobs:
             exit /b 1
           )
 
-      # 6) Zip output
+      # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
       - name: Zip build
         shell: cmd
         run: |
           echo === Zipping build ===
           dir dist\wms-frontend-new\browser
-          powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath 'deployment.zip' -Force"
-          echo === Deployment.zip created ===
+          cd dist\wms-frontend-new\browser
+          tar -czf ..\..\..\deployment.tar.gz *
+          cd ..\..\..
+          echo === Archive created ===
           dir
+
+      # Alternative: ใช้ 7-Zip (ถ้าติดตั้งแล้ว)
+      # - name: Zip build (7-Zip)
+      #   shell: cmd
+      #   run: |
+      #     echo === Zipping build ===
+      #     dir dist\wms-frontend-new\browser
+      #     "C:\Program Files\7-Zip\7z.exe" a -tzip deployment.zip dist\wms-frontend-new\browser\*
+      #     echo === Deployment.zip created ===
+      #     dir
