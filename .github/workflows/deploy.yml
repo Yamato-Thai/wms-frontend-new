@@ -17,7 +17,7 @@ jobs:
       - name: Debug after checkout
         shell: cmd
         run: |
-          echo === After Checkout ===
+          echo "=== After Checkout ==="
           dir
 
       # 2) Setup Node.js
@@ -28,7 +28,7 @@ jobs:
       - name: Debug Node.js version
         shell: cmd
         run: |
-          echo === Node & NPM Version ===
+          echo "=== Node & NPM Version ==="
           node -v
           npm -v
 
@@ -36,27 +36,27 @@ jobs:
       - name: Install dependencies
         shell: cmd
         run: |
-          echo === Before npm ci ===
+          echo "=== Before npm ci ==="
           dir
           npm ci --prefer-offline --no-audit
-          echo === After npm ci ===
+          echo "=== After npm ci ==="
           dir node_modules
 
       # 4) Build Angular
       - name: Build Angular
         shell: cmd
         run: |
-          echo === Before build ===
+          echo "=== Before build ==="
           dir
           npm run build -- --configuration production
-          echo === After build ===
+          echo "=== After build ==="
           dir dist
 
       # 5) Verify build output
       - name: Verify build output
         shell: cmd
         run: |
-          echo === Checking dist folder ===
+          echo "=== Checking dist folder ==="
           dir dist
           dir dist\wms-frontend-new
           dir dist\wms-frontend-new\browser
