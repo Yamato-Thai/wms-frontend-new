@@ -5,9 +5,13 @@ name: server_deploy
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+      tags:
+      - 'v*'  # จะ trigger เมื่อ push tag ที่ขึ้นต้นด้วย 'v' เช่น v1.0.0
+  # เอา push branches และ pull_request ออก เพื่อไม่ให้ deploy ทุกครั้ง
+  workflow_dispatch:  # เพิ่มไว้เผื่อต้องการ manual trigger
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
 
 jobs:
   build-and-deploy:
@@ -16,6 +20,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Get tag version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Read package.json version
+        id: package_version
+        shell: powershell
+        run: |
+          $packageJson = Get-Content -Raw -Path "package.json" | ConvertFrom-Json
+          $version = $packageJson.version
+          Write-Output "PACKAGE_VERSION=$version" >> $env:GITHUB_OUTPUT
+          Write-Output "Package version: $version"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
