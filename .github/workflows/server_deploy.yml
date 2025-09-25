@@ -8,6 +8,19 @@ on:
       tags:
       - 'v*'  # จะ trigger เมื่อ push tag ที่ขึ้นต้นด้วย 'v' เช่น v1.0.0
   # เอา push branches และ pull_request ออก เพื่อไม่ให้ deploy ทุกครั้ง
+  #npm version patch  # เพิ่ม patch version  # 1.0.0 -> 1.0.1
+  # หรือ
+  #npm version minor  # เพิ่ม minor version # 1.0.0 -> 1.1.0
+  # หรือ
+  #npm version major  # เพิ่ม major version # 1.0.0 -> 2.0.0
+  #git push origin master --tags
+  
+  # เพิ่ม tag ด้วยคำสั่ง git tag v1.0.0 แล้ว push ขึ้น remote
+  # git push origin v1.0.0
+
+  # หรือใช้คำสั่ง
+  # git push --tags
+
   workflow_dispatch:  # เพิ่มไว้เผื่อต้องการ manual trigger
   #   branches: [ "master" ]
   # pull_request:
