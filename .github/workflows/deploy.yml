@@ -1,108 +1,108 @@
-name: Test Build on GitHub-hosted (Windows)
+# name: Test Build on GitHub-hosted (Windows)
 
-on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - master
+#   workflow_dispatch:
 
-jobs:
-  build-only:
-    runs-on: windows-latest  # เปลี่ยนจาก self-hosted เพื่อเทส
+# jobs:
+#   build-only:
+#     runs-on: windows-latest  # เปลี่ยนจาก self-hosted เพื่อเทส
 
-    steps:
-      # 1) Checkout repository
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Debug after checkout
-        shell: cmd
-        run: |
-          echo "=== After Checkout ==="
-          dir
+#     steps:
+#       # 1) Checkout repository
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#       - name: Debug after checkout
+#         shell: cmd
+#         run: |
+#           echo "=== After Checkout ==="
+#           dir
 
-      # 2) Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Debug Node.js version
-        shell: cmd
-        run: |
-          echo "=== Node & NPM Version ==="
-          node -v
-          npm -v
+#       # 2) Setup Node.js
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#       - name: Debug Node.js version
+#         shell: cmd
+#         run: |
+#           echo "=== Node & NPM Version ==="
+#           node -v
+#           npm -v
 
-      # 3) Install dependencies
-      - name: Install dependencies
-        shell: cmd
-        run: |
-          echo "=== Before npm ci ==="
-          dir
-          npm ci --prefer-offline --no-audit
-          echo "=== After npm ci ==="
-          dir node_modules
+#       # 3) Install dependencies
+#       - name: Install dependencies
+#         shell: cmd
+#         run: |
+#           echo "=== Before npm ci ==="
+#           dir
+#           npm ci --prefer-offline --no-audit
+#           echo "=== After npm ci ==="
+#           dir node_modules
 
-      # 4) Build Angular
-      - name: Build Angular
-        shell: cmd
-        run: |
-          echo "=== Before build ==="
-          dir
-          npm run build -- --configuration production
-          echo "=== After build ==="
-          dir dist
+#       # 4) Build Angular
+#       - name: Build Angular
+#         shell: cmd
+#         run: |
+#           echo "=== Before build ==="
+#           dir
+#           npm run build -- --configuration production
+#           echo "=== After build ==="
+#           dir dist
 
-      # 5) Verify build output
-      - name: Verify build output
-        shell: cmd
-        run: |
-          echo "=== Checking dist folder ==="
-          dir dist
-          dir dist\wms-frontend-new
-          dir dist\wms-frontend-new\browser
-          if exist dist\wms-frontend-new\browser (
-            echo Build successful
-          ) else (
-            echo Build failed
-            exit /b 1
-          )
+#       # 5) Verify build output
+#       - name: Verify build output
+#         shell: cmd
+#         run: |
+#           echo "=== Checking dist folder ==="
+#           dir dist
+#           dir dist\wms-frontend-new
+#           dir dist\wms-frontend-new\browser
+#           if exist dist\wms-frontend-new\browser (
+#             echo Build successful
+#           ) else (
+#             echo Build failed
+#             exit /b 1
+#           )
 
-       # 6) Zip output - เก็บใน C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist c
-      - name: Zip build
-        shell: cmd
-        run: |
-            set REPO_DIR=C:\Users\tanon\Documents\GitHub\wms-frontend-new
-            set ZIP_DEST=%REPO_DIR%\dist\zip
-            if not exist "%ZIP_DEST%" mkdir "%ZIP_DEST%"
-            cd "%REPO_DIR%"
-            echo === Source files ===
-            dir dist\wms-frontend-new\browser
-            powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath \"$env:ZIP_DEST\deployment.zip\" -Force"
-            echo === Archive created ===
-            dir "%ZIP_DEST%"
+#        # 6) Zip output - เก็บใน C:\Users\tanon\Documents\GitHub\wms-frontend-new\dist c
+#       - name: Zip build
+#         shell: cmd
+#         run: |
+#             set REPO_DIR=C:\Users\tanon\Documents\GitHub\wms-frontend-new
+#             set ZIP_DEST=%REPO_DIR%\dist\zip
+#             if not exist "%ZIP_DEST%" mkdir "%ZIP_DEST%"
+#             cd "%REPO_DIR%"
+#             echo === Source files ===
+#             dir dist\wms-frontend-new\browser
+#             powershell -Command "Compress-Archive -Path 'dist\wms-frontend-new\browser\*' -DestinationPath \"$env:ZIP_DEST\deployment.zip\" -Force"
+#             echo === Archive created ===
+#             dir "%ZIP_DEST%"
             
 
-      # # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
-      # - name: Zip build
-      #   shell: cmd
-      #   run: |
-      #     echo === Zipping build ===
-      #     dir dist\wms-frontend-new\browser
-      #     cd dist\wms-frontend-new\browser
-      #     tar -czf ..\..\..\deployment.tar.gz *
-      #     cd ..\..\..
-      #     echo === Archive created ===
-      #     dir
+#       # # 6) Zip output - แก้ไข: ใช้ Windows tar แทน PowerShell
+#       # - name: Zip build
+#       #   shell: cmd
+#       #   run: |
+#       #     echo === Zipping build ===
+#       #     dir dist\wms-frontend-new\browser
+#       #     cd dist\wms-frontend-new\browser
+#       #     tar -czf ..\..\..\deployment.tar.gz *
+#       #     cd ..\..\..
+#       #     echo === Archive created ===
+#       #     dir
 
-      # Alternative: ใช้ 7-Zip (ถ้าติดตั้งแล้ว)
-      # - name: Zip build (7-Zip)
-      #   shell: cmd
-      #   run: |
-      #     echo === Zipping build ===
-      #     dir dist\wms-frontend-new\browser
-      #     "C:\Program Files\7-Zip\7z.exe" a -tzip deployment.zip dist\wms-frontend-new\browser\*
-      #     echo === Deployment.zip created ===
-      #     dir
+#       # Alternative: ใช้ 7-Zip (ถ้าติดตั้งแล้ว)
+#       # - name: Zip build (7-Zip)
+#       #   shell: cmd
+#       #   run: |
+#       #     echo === Zipping build ===
+#       #     dir dist\wms-frontend-new\browser
+#       #     "C:\Program Files\7-Zip\7z.exe" a -tzip deployment.zip dist\wms-frontend-new\browser\*
+#       #     echo === Deployment.zip created ===
+#       #     dir
 
 
 

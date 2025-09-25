@@ -15,10 +15,6 @@
   @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
 }
 
-.card-no-padding {
-  @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
-}
-
 .card-premium {
   @apply bg-gradient-to-br from-white to-yellow-50 rounded-xl shadow-lg border border-yellow-200 p-6
          hover:shadow-xl transition-all duration-300;
@@ -27,44 +23,6 @@
 .card-glass {
   @apply bg-white/90 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg
          hover:bg-white/95 transition-all duration-300;
-}
-
-/* Dashboard Card Components */
-.dashboard-card {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-blue {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-blue-200 transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-green {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-green-200 transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-orange {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-orange-200 transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-purple {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-purple-200 transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-indigo {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-indigo-200 transition-all duration-300 cursor-pointer;
-}
-
-.dashboard-card-gray {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-8 hover:shadow-xl hover:border-gray-300 transition-all duration-300 cursor-pointer;
-}
-
-/* Content Wrapper Cards */
-.content-wrapper {
-  @apply bg-white rounded-2xl shadow-md w-full p-6;
-}
-
-.content-wrapper-mt {
-  @apply bg-white mt-4 rounded-2xl shadow-md w-full p-6;
 }
 
 /* ==============================================
@@ -108,24 +66,6 @@
   @apply opacity-75 cursor-not-allowed;
 }
 
-/* Button Size Variants */
-.btn-sm {
-  @apply px-4 py-2 text-sm;
-}
-
-.btn-md {
-  @apply px-6 py-2;
-}
-
-.btn-lg {
-  @apply py-3 px-6;
-}
-
-/* Cancel Button */
-.btn-cancel {
-  @apply px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors duration-200;
-}
-
 /* ==============================================
    📝 Form Components - ปรับปรุงให้เรียบง่าย
    ============================================== */
@@ -164,17 +104,6 @@
 .checkbox-input-modern {
   @apply w-4 h-4 text-yellow-500 border-2 border-gray-300 rounded 
          focus:ring-2 focus:ring-yellow-500/50 transition-colors duration-200;
-}
-
-/* Additional Form Components */
-.textarea-modern {
-  @apply w-full p-3 border border-gray-300 rounded-lg 
-         focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
-         transition-colors duration-200 resize-none placeholder:text-gray-400;
-}
-
-.form-label {
-  @apply block text-sm font-medium text-gray-700 mb-2;
 }
 
 /* ==============================================
@@ -234,7 +163,7 @@
    ============================================== */
 
 .badge {
-  @apply px-3 py-1 rounded-full text-sm font-medium mb-2;
+  @apply px-3 py-1 rounded-full text-sm font-medium;
 }
 
 .badge-success {
