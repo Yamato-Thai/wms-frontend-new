@@ -536,7 +536,7 @@
         "Name": "Import Receiving Plan",
         "Description": "Import Receiving Plan",
         "IsActive": 1,
-        "Link": "/modules/inbound/receiving/import",
+        "Link": "/inbound/import",
         "Sequent": 1,
         "DoMain": "WMS-Main"
     },
