@@ -131,14 +131,14 @@
    ============================================== */
 
 .input-modern {
-  @apply w-full p-3 border border-gray-300 rounded-lg 
+  @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none
          focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
-         transition-colors duration-200
+         transition-colors duration-200 bg-white
          placeholder:text-gray-400;
 }
 
 .input-modern:hover {
-  @apply border-gray-400;
+  @apply border-gray-400 focus:outline-none bg-white;
 }
 
 .input-modern-success {
@@ -156,9 +156,9 @@
 }
 
 .select-input-modern {
-  @apply w-full p-3 border border-gray-300 rounded-lg 
+  @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none 
          focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
-         transition-colors duration-200 bg-white cursor-pointer;
+         transition-colors duration-200 hover:bg-white cursor-pointer;
 }
 
 .checkbox-input-modern {
@@ -168,7 +168,7 @@
 
 /* Additional Form Components */
 .textarea-modern {
-  @apply w-full p-3 border border-gray-300 rounded-lg 
+  @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none 
          focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
          transition-colors duration-200 resize-none placeholder:text-gray-400;
 }
