@@ -10,7 +10,7 @@ import { initializeKeycloak } from './app/core/guards/keycloak';
 // Mock Web Crypto API ก่อนอื่นหมด
 (function() {
   'use strict';
-  
+
   if (!window.crypto) {
     (window as any).crypto = {};
   }

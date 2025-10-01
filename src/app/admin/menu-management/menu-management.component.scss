@@ -1,0 +1,149 @@
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fbbf24;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f59e0b;
+}
+
+/* Form improvements */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Table hover effects */
+.table-row:hover {
+  background-color: #f9fafb;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #fbbf24;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+/* Success message animation */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.success-message {
+  animation: fadeInOut 3s ease-in-out;
+}
+
+/* Button hover effects */
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Form field focus effects */
+.form-input:focus {
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+  outline: none;
+}
+
+/* Hierarchical table styling */
+.bg-gray-25 {
+  background-color: #fafafa;
+}
+
+.hierarchy-row {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.hierarchy-row:hover {
+  background-color: #f3f4f6;
+}
+
+/* Child row indentation visual guide */
+.child-row {
+  border-left: 2px solid #e5e7eb;
+  margin-left: 10px;
+}
+
+/* Expand/collapse button styling */
+.expand-btn {
+  transition: transform 0.2s ease-in-out;
+}
+
+.expand-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Tree structure lines */
+.tree-line {
+  border-left: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+}
+
+.tree-line-last {
+  border-left: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  border-bottom-left-radius: 8px;
+}
+
+/* Status badge improvements */
+.status-badge {
+  transition: all 0.2s ease-in-out;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}

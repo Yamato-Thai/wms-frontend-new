@@ -1,5 +1,6 @@
 export const environment = {
-  production: false,
+  production: true,
+  apiUrl: 'https://localhost:44309',
   keycloak: {
     url: 'https://auth2.yamatothai.com', // URL ของ Keycloak Server
     realm: 'yut', // ชื่อ realm ที่สร้างใน Keycloak
@@ -8,6 +9,5 @@ export const environment = {
     pkceMethod: 'S256'
     // หรือ
     // flow: 'implicit' // ใช้ implicit flow แทน
-
   }
 };

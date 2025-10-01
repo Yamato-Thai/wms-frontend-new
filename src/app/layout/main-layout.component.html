@@ -3,9 +3,26 @@
   <div class="px-6 h-16 flex items-center justify-between">
     <!-- Left Section -->
     <div class="flex items-center space-x-6">
+      <!-- Sidebar Toggle for Desktop (เฉพาะเมื่อไม่ใช่ Dashboard) -->
+      @if (!isDashboard) {
+      <button
+        class="hidden md:block p-2 rounded-lg hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        (click)="toggleSidebarCollapse()">
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          @if (sidebarCollapsed) {
+            <!-- Hamburger menu (3 lines) -->
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          } @else {
+            <!-- X close icon -->
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          }
+        </svg>
+      </button>
+      }
+      
       <!-- Hamburger for mobile -->
       <!-- @if (!isDashboard) { -->
-      <button 
+      <button
         class="md:hidden mr-2 p-2 rounded-lg hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         [class.hidden]="isDashboard"
         (click)="toggleSidebar()">
@@ -24,13 +41,13 @@
           WMS Pro
         </h1>
       </div>
-    
+
       <!-- Search Bar -->
       <div class="relative hidden md:block">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <span class="text-gray-400">🔍</span>
         </div>
-        <input type="text" placeholder="Search anything..." class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm 
+        <input type="text" placeholder="Search anything..." class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm
                  focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent
                  transition-all duration-200 hover:bg-white">
       </div>
@@ -41,17 +58,11 @@
       <!-- Quick Actions (เฉพาะ Dashboard) -->
       @if (isDashboard) {
       <div class="hidden lg:flex items-center space-x-3">
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
-                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
-          Products
-        </button>
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
-                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
-          Vendors
-        </button>
-        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600 
-                       hover:bg-yellow-50 rounded-lg transition-all duration-200">
-          Customers
+        <button
+          routerLink="/admin/menu-management"
+          class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-yellow-600
+                 hover:bg-yellow-50 rounded-lg transition-all duration-200">
+          🛠️ Manage Menu
         </button>
       </div>
       }
@@ -63,7 +74,7 @@
           class="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200">
           <span class="text-lg">🔔</span>
         </button>
-        <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5
                      flex items-center justify-center font-medium animate-pulse">3</span>
       </div>
 
@@ -78,7 +89,7 @@
           <div class="text-sm font-medium text-gray-900">{{ fullName }}</div>
           <div class="text-xs text-gray-500">{{ userRole }}</div>
         </div>
-        <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full 
+        <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full
                     flex items-center justify-center text-black font-semibold cursor-pointer
                     hover:scale-105 transition-transform duration-200">
           JD
@@ -98,141 +109,28 @@
   <!-- Sidebar (เฉพาะหน้าที่ไม่ใช่ Dashboard) -->
   <!-- Desktop Sidebar -->
   <aside
-    class="w-72 bg-white border-r border-gray-200 flex-col py-6 px-4 space-y-2 shadow-sm transition-all duration-300 hidden"
-    [class.hidden]="isDashboard || sidebarOpen">
-    <!-- Mobile Sidebar Overlay -->
-
-    @if(sidebarOpen && !isDashboard) {
-    <div class="fixed inset-0 z-50 flex md:hidden">
-      <!-- Overlay -->
-      <div class="fixed inset-0 bg-black bg-opacity-40" (click)="toggleSidebar()"></div>
-      <!-- Sidebar -->
-      <aside
-        class="relative w-64 bg-white border-r border-gray-200 flex flex-col py-6 px-4 space-y-2 shadow-lg h-full z-50 animate-slideInLeft">
-        <!-- Close button -->
-        <button
-          class="absolute top-4 right-4 p-2 rounded-lg hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          (click)="toggleSidebar()">
-          <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <!-- Sidebar Content (copy from desktop) -->
-        <div class="mb-6 pb-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-800">Navigation</h2>
-          <p class="text-sm text-gray-500">Manage your warehouse</p>
-        </div>
-        <nav class="space-y-1 flex-1 overflow-y-auto">
-          @for (menu of showMenu; track menu.Id) {
-          <div class="mb-4">
-            <button (click)="backToMainMenu()"
-              class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
-              <span>←</span>
-              <span>Back to Main Menu</span>
-            </button>
-          </div>
-          <div class="mb-4 pb-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 {{menu.Name}}</h3>
-            <p class="text-sm text-gray-500 px-4">{{menu.Description}}</p>
-          </div>
-          @for (item of menu.Children; track item.Id) {
-          <div class="menu-item">
-            @if (item.Children && item.Children.length > 0) {
-            <button (click)="toggleExpanded(item.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                       hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-              <div class="flex items-center space-x-3">
-                <span class="text-xl group-hover:scale-110 transition-transform duration-200">📁</span>
-                <span class="font-medium">{{item.Name}}</span>
-              </div>
-              <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-90]="isExpanded(item.Id)"
-                fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z">
-                </path>
-              </svg>
-            </button>
-            <div class="overflow-hidden transition-all duration-300 ease-in-out" [class.max-h-96]="isExpanded(item.Id)"
-              [class.opacity-100]="isExpanded(item.Id)" [class.max-h-0]="!isExpanded(item.Id)"
-              [class.opacity-0]="!isExpanded(item.Id)">
-              @for (child of item.Children; track child.Id) {
-              <div class="pl-6">
-                @if (child.Children && child.Children.length > 0) {
-                <button (click)="toggleExpanded(child.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-gray-600 
-                               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                  <div class="flex items-center space-x-3">
-                    <span class="text-lg group-hover:scale-110 transition-transform duration-200">📂</span>
-                    <span class="font-medium text-sm">{{child.Name}}</span>
-                  </div>
-                  <svg class="w-3 h-3 transition-transform duration-200" [class.rotate-90]="isExpanded(child.Id)"
-                    fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z">
-                    </path>
-                  </svg>
-                </button>
-                <div class="overflow-hidden transition-all duration-300 ease-in-out"
-                  [class.max-h-96]="isExpanded(child.Id)" [class.opacity-100]="isExpanded(child.Id)"
-                  [class.max-h-0]="!isExpanded(child.Id)" [class.opacity-0]="!isExpanded(child.Id)">
-                  @for (grandChild of child.Children; track grandChild.Id) {
-                  <a [routerLink]="grandChild.Link"
-                    routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 ml-6 rounded-lg text-gray-600 
-                                    hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                    <span class="text-sm group-hover:scale-110 transition-transform duration-200">📄</span>
-                    <span class="font-medium text-sm">{{grandChild.Name}}</span>
-                  </a>
-                  }
-                </div>
-                } @else {
-                <a [routerLink]="child.Link"
-                  routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 
-                                hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                  <span class="text-lg group-hover:scale-110 transition-transform duration-200">📄</span>
-                  <span class="font-medium text-sm">{{child.Name}}</span>
-                </a>
-                }
-              </div>
-              }
-            </div>
-            } @else {
-            <a [routerLink]="item.Link" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
-              class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
-                        hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-              <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
-              <span class="font-medium">{{item.Name}}</span>
-            </a>
-            }
-          </div>
-          }
-          }
-        </nav>
-        <div class="mt-auto pt-4 border-t border-gray-200">
-          <div class="flex items-center space-x-3 px-4 py-3">
-            <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 truncate">Storage Status</p>
-              <div class="flex items-center space-x-2 mt-1">
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div class="bg-yellow-400 h-2 rounded-full w-3/4"></div>
-                </div>
-                <span class="text-xs text-gray-500">75%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </div>
-    }
+    class="bg-white border-r border-gray-200 flex-col py-6 px-4 space-y-2 shadow-sm transition-transform duration-500 ease-in-out hidden md:flex w-72 fixed left-0 top-16 h-full z-30"
+    [class.hidden]="isDashboard"
+    [style.transform]="sidebarCollapsed ? 'translateX(-100%)' : 'translateX(0)'">
+    
     <!-- Sidebar Header -->
-    <div class="mb-6 pb-4 border-b border-gray-200">
+    <div class="mb-6 pb-4 border-b border-gray-200" [class.hidden]="sidebarCollapsed">
       <h2 class="text-lg font-semibold text-gray-800">Navigation</h2>
       <p class="text-sm text-gray-500">Manage your warehouse</p>
+    </div>
+
+    <!-- Collapsed Header (เมื่อ collapsed) -->
+    <div class="mb-6 pb-4 border-b border-gray-200 text-center" [class.hidden]="!sidebarCollapsed">
+      <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center mx-auto">
+        <span class="text-black font-bold text-sm">W</span>
+      </div>
     </div>
 
     <!-- Navigation Links -->
     <nav class="space-y-1 flex-1">
       @for (menu of showMenu; track menu.Id) {
 
-      <div class="mb-4">
+      <div class="mb-4" [class.hidden]="sidebarCollapsed">
         <button (click)="backToMainMenu()"
           class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
           <span>←</span>
@@ -240,18 +138,34 @@
         </button>
       </div>
 
-      <div class="mb-4 pb-4 border-b border-gray-200">
+      <!-- Collapsed Back Button -->
+      <div class="mb-4 text-center" [class.hidden]="!sidebarCollapsed">
+        <button (click)="backToMainMenu()"
+          class="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
+          title="Back to Main Menu">
+          <span class="text-lg">←</span>
+        </button>
+      </div>
+
+      <div class="mb-4 pb-4 border-b border-gray-200" [class.hidden]="sidebarCollapsed">
         <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 {{menu.Name}}</h3>
         <p class="text-sm text-gray-500 px-4">{{menu.Description}}</p>
+      </div>
+
+      <!-- Collapsed Menu Title -->
+      <div class="mb-4 pb-4 border-b border-gray-200 text-center" [class.hidden]="!sidebarCollapsed">
+        <div class="text-2xl" [title]="menu.Name">📦</div>
       </div>
 
       <!-- Recursive Menu Items -->
       @for (item of menu.Children; track item.Id) {
       <div class="menu-item">
 
+        <!-- Normal Mode -->
+        @if (!sidebarCollapsed) {
         <!-- Item with children (expandable) -->
         @if (item.Children && item.Children.length > 0) {
-        <button (click)="toggleExpanded(item.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-gray-700 
+        <button (click)="toggleExpanded(item.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-gray-700
                      hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
           <div class="flex items-center space-x-3">
             <span class="text-xl group-hover:scale-110 transition-transform duration-200">📁</span>
@@ -275,7 +189,7 @@
 
             <!-- Nested child with children -->
             @if (child.Children && child.Children.length > 0) {
-            <button (click)="toggleExpanded(child.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-gray-600 
+            <button (click)="toggleExpanded(child.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-gray-600
                              hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
               <div class="flex items-center space-x-3">
                 <span class="text-lg group-hover:scale-110 transition-transform duration-200">📂</span>
@@ -296,7 +210,7 @@
 
               @for (grandChild of child.Children; track grandChild.Id) {
               <a [routerLink]="grandChild.Link"
-                routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 ml-6 rounded-lg text-gray-600 
+                routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 ml-6 rounded-lg text-gray-600
                                   hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
                 <span class="text-sm group-hover:scale-110 transition-transform duration-200">📄</span>
                 <span class="font-medium text-sm">{{grandChild.Name}}</span>
@@ -306,7 +220,7 @@
             } @else {
             <!-- Direct child link (no children) -->
             <a [routerLink]="child.Link" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
-              class="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 
+              class="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600
                               hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
               <span class="text-lg group-hover:scale-110 transition-transform duration-200">📄</span>
               <span class="font-medium text-sm">{{child.Name}}</span>
@@ -317,11 +231,46 @@
         </div>
         } @else {
         <!-- Leaf item (clickable link) -->
-        <a [routerLink]="item.Link" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 
+        <a [routerLink]="item.Link" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700
                       hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
           <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
           <span class="font-medium">{{item.Name}}</span>
         </a>
+        }
+
+        } @else {
+        <!-- Collapsed Mode - Show only icons -->
+        <div class="flex flex-col items-center space-y-2">
+          @if (item.Children && item.Children.length > 0) {
+          <button 
+            (click)="toggleExpanded(item.Id)" 
+            class="w-12 h-12 flex items-center justify-center rounded-lg text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200"
+            [title]="item.Name">
+            <span class="text-xl">📁</span>
+          </button>
+          
+          <!-- Show collapsed children -->
+          @if (isExpanded(item.Id)) {
+          <div class="flex flex-col space-y-1">
+            @for (child of item.Children; track child.Id) {
+            <a [routerLink]="child.Link" 
+              routerLinkActive="bg-yellow-50 text-yellow-600"
+              class="w-10 h-10 flex items-center justify-center rounded text-gray-600 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200"
+              [title]="child.Name">
+              <span class="text-sm">📄</span>
+            </a>
+            }
+          </div>
+          }
+          } @else {
+          <a [routerLink]="item.Link" 
+            routerLinkActive="bg-yellow-50 text-yellow-600"
+            class="w-12 h-12 flex items-center justify-center rounded-lg text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200"
+            [title]="item.Name">
+            <span class="text-xl">📥</span>
+          </a>
+          }
+        </div>
         }
       </div>
       }
@@ -329,7 +278,7 @@
     </nav>
 
     <!-- Sidebar Footer -->
-    <div class="mt-auto pt-4 border-t border-gray-200">
+    <div class="mt-auto pt-4 border-t border-gray-200" [class.hidden]="sidebarCollapsed">
       <div class="flex items-center space-x-3 px-4 py-3">
         <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
         <div class="flex-1 min-w-0">
@@ -343,10 +292,140 @@
         </div>
       </div>
     </div>
+
+    <!-- Collapsed Footer -->
+    <div class="mt-auto pt-4 border-t border-gray-200 text-center" [class.hidden]="!sidebarCollapsed">
+      <div class="w-8 h-8 bg-gray-200 rounded-full mx-auto" title="Storage: 75%"></div>
+    </div>
   </aside>
+  <!-- Mobile Sidebar Overlay -->
+  @if(sidebarOpen && !isDashboard) {
+  <div class="fixed inset-0 z-50 flex md:hidden">
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-40" (click)="toggleSidebar()"></div>
+    <!-- Sidebar -->
+    <aside
+      class="relative w-64 bg-white border-r border-gray-200 flex flex-col py-6 px-4 space-y-2 shadow-lg h-full z-50 animate-slideInLeft">
+        <!-- Close button -->
+      <button
+        class="absolute top-4 right-4 p-2 rounded-lg hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        (click)="toggleSidebar()">
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <!-- Mobile Sidebar Content (same as desktop but simplified) -->
+      <div class="mb-6 pb-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800">Navigation</h2>
+        <p class="text-sm text-gray-500">Manage your warehouse</p>
+      </div>
+      
+      <nav class="space-y-1 flex-1 overflow-y-auto">
+        @for (menu of showMenu; track menu.Id) {
+        <div class="mb-4">
+          <button (click)="backToMainMenu()"
+            class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-yellow-600 transition-all duration-200">
+            <span>←</span>
+            <span>Back to Main Menu</span>
+          </button>
+        </div>
+        <div class="mb-4 pb-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-yellow-700 px-4">📦 {{menu.Name}}</h3>
+          <p class="text-sm text-gray-500 px-4">{{menu.Description}}</p>
+        </div>
+        @for (item of menu.Children; track item.Id) {
+        <div class="menu-item">
+          @if (item.Children && item.Children.length > 0) {
+          <button (click)="toggleExpanded(item.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg text-gray-700
+                     hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+            <div class="flex items-center space-x-3">
+              <span class="text-xl group-hover:scale-110 transition-transform duration-200">📁</span>
+              <span class="font-medium">{{item.Name}}</span>
+            </div>
+            <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-90]="isExpanded(item.Id)"
+              fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z">
+              </path>
+            </svg>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [class.max-h-96]="isExpanded(item.Id)"
+            [class.opacity-100]="isExpanded(item.Id)" [class.max-h-0]="!isExpanded(item.Id)"
+            [class.opacity-0]="!isExpanded(item.Id)">
+            @for (child of item.Children; track child.Id) {
+            <div class="pl-6">
+              @if (child.Children && child.Children.length > 0) {
+              <button (click)="toggleExpanded(child.Id)" class="w-full flex items-center justify-between space-x-3 px-4 py-2 rounded-lg text-gray-600
+                             hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                <div class="flex items-center space-x-3">
+                  <span class="text-lg group-hover:scale-110 transition-transform duration-200">📂</span>
+                  <span class="font-medium text-sm">{{child.Name}}</span>
+                </div>
+                <svg class="w-3 h-3 transition-transform duration-200" [class.rotate-90]="isExpanded(child.Id)"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z">
+                  </path>
+                </svg>
+              </button>
+              <div class="overflow-hidden transition-all duration-300 ease-in-out"
+                [class.max-h-96]="isExpanded(child.Id)" [class.opacity-100]="isExpanded(child.Id)"
+                [class.max-h-0]="!isExpanded(child.Id)" [class.opacity-0]="!isExpanded(child.Id)">
+                @for (grandChild of child.Children; track grandChild.Id) {
+                <a [routerLink]="grandChild.Link"
+                  routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 ml-6 rounded-lg text-gray-600
+                                  hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                  <span class="text-sm group-hover:scale-110 transition-transform duration-200">📄</span>
+                  <span class="font-medium text-sm">{{grandChild.Name}}</span>
+                </a>
+                }
+              </div>
+              } @else {
+              <a [routerLink]="child.Link"
+                routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600
+                              hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+                <span class="text-lg group-hover:scale-110 transition-transform duration-200">📄</span>
+                <span class="font-medium text-sm">{{child.Name}}</span>
+              </a>
+              }
+            </div>
+            }
+          </div>
+          } @else {
+          <a [routerLink]="item.Link" routerLinkActive="bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700
+                        hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
+            <span class="text-xl group-hover:scale-110 transition-transform duration-200">📥</span>
+            <span class="font-medium">{{item.Name}}</span>
+          </a>
+          }
+        </div>
+        }
+        }
+      </nav>
+      
+      <div class="mt-auto pt-4 border-t border-gray-200">
+        <div class="flex items-center space-x-3 px-4 py-3">
+          <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 truncate">Storage Status</p>
+            <div class="flex items-center space-x-2 mt-1">
+              <div class="flex-1 bg-gray-200 rounded-full h-2">
+                <div class="bg-yellow-400 h-2 rounded-full w-3/4"></div>
+              </div>
+              <span class="text-xs text-gray-500">75%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+  }
 
   <!-- Main Content Area -->
-  <main class="flex-1 overflow-hidden">
+  <main class="flex-1 overflow-hidden transition-all duration-500 ease-in-out"
+        [style.margin-left]="!isDashboard && !sidebarCollapsed ? '288px' : '0'">
     <!-- Other Pages: Show Normal Content -->
     @if (!isDashboard) {
     <div class="p-6 w-full">
