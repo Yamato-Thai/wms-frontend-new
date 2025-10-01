@@ -1,16 +1,36 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SearchCenterComponent, SearchResult, SearchFilters } from '../../component-center/search-center/search-center.component';
+import { SearchConfigService, SearchConfig } from '../../../service/search-config.service';
 
 @Component({
   selector: 'app-receive-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SearchCenterComponent],
   templateUrl: './receive-list.component.html',
   styleUrls: ['./receive-list.component.scss']
 })
 export class ReceiveListComponent {
- toggleState1 = true;
+  private searchConfigService = new SearchConfigService();
+  searchConfig = this.searchConfigService.getReceiveListConfig();
+  
+  // เก็บข้อมูล original และ filtered
+  originalReceiveList: any[] = [];
+  filteredReceiveList: any[] = [];
+
+  // Getter สำหรับใช้ใน template
+  get receiveList() {
+    // ถ้าไม่มีการค้นหา (filteredReceiveList ว่าง) ให้แสดงข้อมูลเดิม
+    return this.filteredReceiveList.length > 0 ? this.filteredReceiveList : this.originalReceiveList;
+  }
+
+  ngOnInit() {
+    // ไม่ต้องเซ็ต filteredReceiveList เพราะจะให้แสดงข้อมูลเดิมก่อน
+    // this.filteredReceiveList = [...this.originalReceiveList];
+  }
+  
+  toggleState1 = true;
   toggleState2 = false;
   darkMode = false;
   notifications = true;
@@ -23,8 +43,10 @@ export class ReceiveListComponent {
   showErrorToast = false;
   showTooltip1 = false;
   showTooltip2 = false;
-  // ข้อมูลจำลองสำหรับรายการ Receive
-  receiveList = [
+  
+  constructor() {
+    // Initialize data
+    this.originalReceiveList = [
     { 
       id: 'RCV-001', 
       vendor: 'Yamato Foods', 
@@ -110,7 +132,12 @@ export class ReceiveListComponent {
       }
     }
   ];
-  selectedItem: any = this.receiveList[0];
+    // ไม่ต้องเซ็ต filteredReceiveList ที่นี่ 
+    // this.filteredReceiveList = [...this.originalReceiveList];
+  }
+  
+  selectedItem: any = null;
+  showDetail: boolean = false;
 
   select(item: any) {
     this.selectedItem = item;
@@ -195,7 +222,6 @@ export class ReceiveListComponent {
   }
 
   // UI state
-  showDetail = false;
   showHeaderModal = false;
   showItemModal = false;
   editingItemIndex = -1;
@@ -206,6 +232,76 @@ export class ReceiveListComponent {
 
   closeHeaderModal() {
     this.showHeaderModal = false;
+  }
+
+  // Search Center Methods (ไม่ต้องใช้แล้วเพราะเป็น inline component)
+  handleSearchResult(result: SearchResult) {
+    console.log('Selected search result:', result);
+    // Handle search result - navigate to specific record or filter list
+    // For demonstration, let's filter the receiveList based on the selected result
+    if (result.receiveNumber) {
+      const foundItem = this.receiveList.find(item => item.id === result.receiveNumber);
+      if (foundItem) {
+        this.select(foundItem);
+      }
+    }
+  }
+
+  handleFiltersChanged(filters: SearchFilters) {
+    console.log('Search filters changed:', filters);
+    // Here you would typically call an API with the filters
+    // For now, just log the filters
+    // Example API call:
+    // this.receiveService.searchReceives(filters).subscribe(results => {
+    //   this.filteredReceiveList = results;
+    // });
+  }
+
+  handleSearchResults(results: SearchResult[]) {
+    console.log('Search results received:', results);
+    
+    // รีเซ็ต detail เมื่อมีการค้นหา
+    this.selectedItem = null;
+    this.showDetail = false;
+    
+    if (results.length > 0) {
+      // ใช้ search criteria จาก results เพื่อ filter originalReceiveList
+      const searchResult = results[0]; // ใช้ criteria จาก search แรก
+      
+      this.filteredReceiveList = this.originalReceiveList.filter(item => {
+        let match = true;
+        
+        // ค้นหาจาก receive number
+        if (searchResult.receiveNumber) {
+          match = match && item.id.toLowerCase().includes(searchResult.receiveNumber.toLowerCase());
+        }
+        
+        // ค้นหาจาก vendor
+        if (searchResult.vendor) {
+          match = match && item.vendor.toLowerCase().includes(searchResult.vendor.toLowerCase());
+        }
+        
+        // ค้นหาจาก status
+        if (searchResult.status) {
+          match = match && item.status.toLowerCase().includes(searchResult.status.toLowerCase());
+        }
+        
+        // ค้นหาจาก date
+        if (searchResult.date) {
+          match = match && item.date.includes(searchResult.date);
+        }
+        
+        // ค้นหาจาก PO Number
+        if (searchResult.poNumber) {
+          match = match && item.details.poNumber.toLowerCase().includes(searchResult.poNumber.toLowerCase());
+        }
+        
+        return match;
+      });
+    } else {
+      // ถ้าไม่มีผลลัพธ์ให้ล้าง filteredReceiveList เพื่อแสดงข้อมูลเดิม
+      this.filteredReceiveList = [];
+    }
   }
 
   // Getter functions for calculations

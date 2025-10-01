@@ -1,0 +1,196 @@
+<!-- Search Center Component (Inline) -->
+<div class="card">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-yellow-100 rounded-lg">
+        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800">{{ config.title || 'ค้นหาข้อมูล' }}</h3>
+    </div>
+  </div>
+
+  <!-- Search Filters -->
+  <div class="space-y-6">
+    <!-- Primary Search Fields -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      @if (enabledFields.poNumber) {
+        <div>
+          <label class="form-label">เลขที่ PO</label>
+          <input type="text" 
+                 class="input-modern" 
+                 [(ngModel)]="filters.poNumber"
+                 (ngModelChange)="onFilterChange()"
+                 [placeholder]="placeholders.poNumber || 'ระบุเลขที่ PO...'">
+        </div>
+      }
+
+      @if (enabledFields.receiveNumber) {
+        <div>
+          <label class="form-label">เลขที่ใบรับ</label>
+          <input type="text" 
+                 class="input-modern" 
+                 [(ngModel)]="filters.receiveNumber"
+                 (ngModelChange)="onFilterChange()"
+                 [placeholder]="placeholders.receiveNumber || 'ระบุเลขที่ใบรับ...'">
+        </div>
+      }
+
+      @if (enabledFields.outboundNumber) {
+        <div>
+          <label class="form-label">เลขที่ใบจ่าย</label>
+          <input type="text" 
+                 class="input-modern" 
+                 [(ngModel)]="filters.outboundNumber"
+                 (ngModelChange)="onFilterChange()"
+                 [placeholder]="placeholders.outboundNumber || 'ระบุเลขที่ใบจ่าย...'">
+        </div>
+      }
+
+      @if (enabledFields.skuCode) {
+        <div>
+          <label class="form-label">รหัสสินค้า</label>
+          <input type="text" 
+                 class="input-modern" 
+                 [(ngModel)]="filters.skuCode"
+                 (ngModelChange)="onFilterChange()"
+                 [placeholder]="placeholders.skuCode || 'ระบุรหัสสินค้า...'">
+        </div>
+      }
+    </div>
+
+    <!-- Advanced Filters Toggle -->
+    <div class="border-t border-gray-200 pt-4">
+      <button type="button" 
+              class="btn-secondary btn-sm"
+              (click)="toggleAdvancedFilters()">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                [attr.d]="showAdvancedFilters ? 'M19 9l-7 7-7-7' : 'M9 5l7 7-7 7'" />
+        </svg>
+        {{ showAdvancedFilters ? 'ซ่อน' : 'แสดง' }}ตัวกรองเพิ่มเติม
+      </button>
+    </div>
+
+    <!-- Advanced Filters -->
+    @if (showAdvancedFilters) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
+        <div>
+          <label class="form-label">สถานะ</label>
+          <select class="select-input-modern"
+                  [(ngModel)]="filters.status"
+                  (ngModelChange)="onFilterChange()">
+            @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">
+                {{ option.label }}
+              </option>
+            }
+          </select>
+        </div>
+        
+        <div>
+          <label class="form-label">ประเภท</label>
+          <select class="select-input-modern"
+                  [(ngModel)]="filters.type"
+                  (ngModelChange)="onFilterChange()">
+            @for (option of typeOptions; track option.value) {
+              <option [value]="option.value">
+                {{ option.label }}
+              </option>
+            }
+          </select>
+        </div>
+        
+        <div>
+          <label class="form-label">วันที่เริ่มต้น</label>
+          <input type="date" 
+                 class="input-modern"
+                 [(ngModel)]="filters.dateFrom"
+                 (ngModelChange)="onFilterChange()">
+        </div>
+        
+        <div>
+          <label class="form-label">วันที่สิ้นสุด</label>
+          <input type="date" 
+                 class="input-modern"
+                 [(ngModel)]="filters.dateTo"
+                 (ngModelChange)="onFilterChange()">
+        </div>
+        
+        <div class="sm:col-span-2">
+          <label class="form-label">ผู้จำหน่าย</label>
+          <select class="select-input-modern"
+                  [(ngModel)]="filters.vendor"
+                  (ngModelChange)="onFilterChange()">
+            @for (option of vendorOptions; track option.value) {
+              <option [value]="option.value">
+                {{ option.label }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+
+    <!-- Search Actions -->
+    <div class="flex items-center justify-between">
+      <button type="button" 
+              class="btn-cancel"
+              (click)="clearFilters()">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        ล้างตัวกรอง
+      </button>
+
+      <div class="flex items-center space-x-3">
+        @if (hasFilters()) {
+          <span class="text-sm text-gray-600">
+            พบ {{ actualResultCount }} รายการ
+          </span>
+        }
+        <button type="button" 
+                class="btn-primary"
+                (click)="searchData()"
+                [disabled]="!hasFilters() || isSearching">
+          @if (!isSearching) {
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          }
+          @if (isSearching) {
+            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          }
+          {{ isSearching ? 'กำลังค้นหา...' : 'ค้นหา' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Status -->
+    @if (hasFilters() && !isSearching) {
+      <div class="text-center py-4 border-t border-gray-200">
+        @if (results.length > 0) {
+          <div class="text-sm text-green-600 flex items-center justify-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            ผลการค้นหาจะแสดงในรายการด้านล่าง
+          </div>
+        }
+        @if (results.length === 0) {
+          <div class="text-sm text-yellow-600 flex items-center justify-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.856-.833-2.626 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
