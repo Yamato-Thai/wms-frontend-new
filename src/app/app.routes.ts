@@ -20,6 +20,10 @@ export const routes: Routes = [
         path: 'outbound',
         loadChildren: () => import('./main/outbound/outbound.routes').then(m => m.routes)
       },
+      {
+        path: 'admin/menu-management',
+        loadComponent: () => import('./admin/menu-management/menu-management.component').then(m => m.MenuManagementComponent)
+      },
       // เพิ่ม feature อื่น ๆ
     ]
   },{

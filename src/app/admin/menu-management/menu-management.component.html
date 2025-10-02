@@ -1,0 +1,476 @@
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">🛠️ Menu Management</h1>
+    <p class="text-gray-600">Manage application menus and navigation structure</p>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (errorMessage) {
+  <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="flex items-center">
+      <span class="text-red-500 mr-2">❌</span>
+      <span class="text-red-700">{{ errorMessage }}</span>
+    </div>
+  </div>
+  }
+
+  @if (successMessage) {
+  <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+    <div class="flex items-center">
+      <span class="text-green-500 mr-2">✅</span>
+      <span class="text-green-700">{{ successMessage }}</span>
+    </div>
+  </div>
+  }
+
+  <!-- Controls -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+      <!-- Search and Filters -->
+      <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+        <!-- Search -->
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-400">🔍</span>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+            placeholder="Search menus..."
+            class="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm
+                   focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
+        </div>
+
+        <!-- Parent Filter -->
+        <select
+          [(ngModel)]="selectedParent"
+          (change)="onParentFilterChange()"
+          class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">
+          <option [ngValue]="null">All Parents</option>
+          <option [ngValue]="0">Root Menus</option>
+          @for (parent of parentMenus; track parent.id) {
+            <option [ngValue]="parent.id">{{ parent.name }}</option>
+          }
+        </select>
+
+        <!-- Status Filter -->
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="onStatusFilterChange()"
+          class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Add Button and Display Toggle -->
+      <div class="flex space-x-2">
+        <button
+          (click)="toggleDisplayMode()"
+          class="px-4 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors duration-200">
+          {{ displayMode === 'tree' ? '📋 Table View' : '🌳 Tree View' }}
+        </button>
+        <button
+          (click)="showCreateForm()"
+          class="px-4 py-2 bg-yellow-500 text-black font-medium rounded-lg hover:bg-yellow-600 transition-colors duration-200">
+          ➕ Add Root Menu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Modal -->
+  @if (isFormVisible) {
+  <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">
+            @if (isEditMode) {
+              ✏️ Edit Menu
+            } @else if (isChildMode) {
+              ➕ Create Child Menu for "{{ parentMenuForChild?.name }}"
+            } @else {
+              ➕ Create Root Menu
+            }
+          </h2>
+          <button
+            (click)="hideForm()"
+            class="text-gray-400 hover:text-gray-600">
+            ✕
+          </button>
+        </div>
+
+        <form [formGroup]="menuForm" (ngSubmit)="saveMenu()">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Parent Menu</label>
+              @if (isChildMode) {
+                <input
+                  type="text"
+                  [value]="parentMenuForChild?.name || 'Root Menu'"
+                  disabled
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600">
+              } @else {
+                <select
+                  formControlName="parent"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                  <option [ngValue]="0">Root Menu</option>
+                  @for (parent of parentMenus; track parent.id) {
+                    <option [ngValue]="parent.id">{{ parent.name }}</option>
+                  }
+                </select>
+              }
+            </div>
+
+            <!-- Name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+              <input
+                type="text"
+                formControlName="name"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                [class.border-red-500]="getFieldError('name')">
+              @if (getFieldError('name')) {
+                <p class="text-red-500 text-xs mt-1">{{ getFieldError('name') }}</p>
+              }
+            </div>
+
+            <!-- Sequence -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Sequence</label>
+              <input
+                type="number"
+                formControlName="sequent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+
+            <!-- Description -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                formControlName="description"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                [class.border-red-500]="getFieldError('description')"></textarea>
+              @if (getFieldError('description')) {
+                <p class="text-red-500 text-xs mt-1">{{ getFieldError('description') }}</p>
+              }
+            </div>
+
+            <!-- Link -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Link</label>
+              <input
+                type="text"
+                formControlName="link"
+                placeholder="/modules/..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                [class.border-red-500]="getFieldError('link')">
+              @if (getFieldError('link')) {
+                <p class="text-red-500 text-xs mt-1">{{ getFieldError('link') }}</p>
+              }
+            </div>
+
+            <!-- Domain -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Domain</label>
+              <input
+                type="text"
+                formControlName="doMain"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                [class.border-red-500]="getFieldError('doMain')">
+              @if (getFieldError('doMain')) {
+                <p class="text-red-500 text-xs mt-1">{{ getFieldError('doMain') }}</p>
+              }
+            </div>
+
+            <!-- Image -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+              <input
+                type="text"
+                formControlName="image"
+                placeholder="./assets/images/icons/..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                [class.border-red-500]="getFieldError('image')">
+              @if (getFieldError('image')) {
+                <p class="text-red-500 text-xs mt-1">{{ getFieldError('image') }}</p>
+              }
+            </div>
+
+            <!-- Active Status -->
+            <div class="md:col-span-2">
+              <label class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  formControlName="isActive"
+                  class="w-4 h-4 text-yellow-600 rounded focus:ring-yellow-500 focus:ring-2">
+                <span class="text-sm font-medium text-gray-700">Active</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              type="button"
+              (click)="hideForm()"
+              class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="isLoading"
+              class="px-4 py-2 bg-yellow-500 text-black font-medium rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200">
+              @if (isLoading) {
+                Saving...
+              } @else if (isEditMode) {
+                Update
+              } @else if (isChildMode) {
+                Create Child
+              } @else {
+                Create Root
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Content -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    @if (isLoading) {
+    <div class="p-8 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+      <p class="mt-2 text-gray-600">Loading menus...</p>
+    </div>
+    } @else if (displayMode === 'tree') {
+    <!-- Tree View -->
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">🌳 Menu Hierarchy</h3>
+      </div>
+      <div class="space-y-2">
+        @for (menu of filteredHierarchicalMenus; track menu.id) {
+          <ng-container *ngTemplateOutlet="menuNode; context: { $implicit: menu, level: 0 }"></ng-container>
+        }
+        @if (filteredHierarchicalMenus.length === 0) {
+        <div class="text-center text-gray-500 py-8">
+          No menus found
+        </div>
+        }
+      </div>
+    </div>
+    } @else {
+    <!-- Table View with Hierarchical Support -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Menu Structure
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Link</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sequence</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (menu of filteredHierarchicalMenus; track menu.id) {
+            <ng-container *ngTemplateOutlet="tableRow; context: { $implicit: menu, level: 0, parentExpanded: true }"></ng-container>
+          }
+          @if (filteredHierarchicalMenus.length === 0) {
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+              No menus found
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Template สำหรับ Table Row -->
+<ng-template #tableRow let-menu let-level="level" let-parentExpanded="parentExpanded">
+  @if (parentExpanded) {
+  <tr class="hierarchy-row" [class.bg-gray-25]="level > 0">
+    <!-- Menu Structure Column -->
+    <td class="px-6 py-4 whitespace-nowrap" [style.padding-left.px]="20 + (level * 20)">
+      <div class="flex items-center space-x-2">
+        <!-- Expand/Collapse Button -->
+        @if (menu.childMenus && menu.childMenus.length > 0) {
+        <button
+          (click)="toggleNode(menu.id)"
+          class="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 expand-btn">
+          <span class="text-sm">{{ isNodeExpanded(menu.id) ? '🔽' : '▶️' }}</span>
+        </button>
+        } @else {
+        <div class="w-5 h-5 flex items-center justify-center">
+          <span class="text-gray-300 text-sm">•</span>
+        </div>
+        }
+        
+        <!-- Level indicator line for child items -->
+        @if (level > 0) {
+        <div class="w-3 h-3 border-l border-b border-gray-300 rounded-bl-md mr-2"></div>
+        }
+        
+        <!-- Menu Info -->
+        <div class="flex-1">
+          <div class="flex items-center space-x-2">
+            <span class="text-sm font-medium text-gray-900">{{ menu.name }}</span>
+            <span class="text-xs text-gray-500">(ID: {{ menu.id }})</span>
+          </div>
+          @if (menu.description) {
+          <div class="text-sm text-gray-500 mt-1">{{ menu.description }}</div>
+          }
+        </div>
+      </div>
+    </td>
+    
+    <!-- Link -->
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      @if (menu.link) {
+        <span class="text-blue-600">{{ menu.link }}</span>
+      } @else {
+        <span class="text-gray-400">-</span>
+      }
+    </td>
+    
+    <!-- Sequence -->
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      {{ menu.sequent || 0 }}
+    </td>
+    
+    <!-- Status -->
+    <td class="px-6 py-4 whitespace-nowrap">
+      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-badge"
+            [class.bg-green-100]="menu.isActive"
+            [class.text-green-800]="menu.isActive"
+            [class.bg-red-100]="!menu.isActive"
+            [class.text-red-800]="!menu.isActive">
+        {{ menu.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </td>
+    
+    <!-- Actions -->
+    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+      @if (menu.childMenus !== undefined) {
+      <button
+        (click)="showCreateChildForm(menu)"
+        class="text-green-600 hover:text-green-900 text-xs"
+        title="Add child menu">
+        ➕
+      </button>
+      }
+      <button
+        (click)="editMenu(menu)"
+        class="text-yellow-600 hover:text-yellow-900">
+        ✏️ Edit
+      </button>
+      <button
+        (click)="deleteMenu(menu)"
+        class="text-red-600 hover:text-red-900">
+        🗑️ Delete
+      </button>
+    </td>
+  </tr>
+  
+  <!-- Child Rows -->
+  @if (menu.childMenus && menu.childMenus.length > 0) {
+    @for (childMenu of menu.childMenus; track childMenu.id) {
+      <ng-container *ngTemplateOutlet="tableRow; context: { 
+        $implicit: childMenu, 
+        level: level + 1, 
+        parentExpanded: isNodeExpanded(menu.id) 
+      }"></ng-container>
+    }
+  }
+  }
+</ng-template>
+<ng-template #menuNode let-menu let-level="level">
+  <div class="border border-gray-200 rounded-lg mb-2" [style.margin-left.px]="level * 20">
+    <div class="p-4 hover:bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <!-- Expand/Collapse Button -->
+          @if (menu.childMenus && menu.childMenus.length > 0) {
+          <button
+            (click)="toggleNode(menu.id)"
+            class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600">
+            <span>{{ isNodeExpanded(menu.id) ? '🔽' : '▶️' }}</span>
+          </button>
+          } @else {
+          <div class="w-6 h-6 flex items-center justify-center">
+            <span class="text-gray-300">•</span>
+          </div>
+          }
+          
+          <!-- Menu Info -->
+          <div class="flex-1">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-gray-900">{{ menu.name }}</span>
+              <span class="text-xs text-gray-500">(ID: {{ menu.id }})</span>
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-green-100]="menu.isActive"
+                    [class.text-green-800]="menu.isActive"
+                    [class.bg-red-100]="!menu.isActive"
+                    [class.text-red-800]="!menu.isActive">
+                {{ menu.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+            @if (menu.description) {
+            <div class="text-sm text-gray-500 mt-1">{{ menu.description }}</div>
+            }
+            @if (menu.link) {
+            <div class="text-sm text-blue-600 mt-1">🔗 {{ menu.link }}</div>
+            }
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex items-center space-x-2">
+          @if (menu.childMenus !== undefined) {
+          <button
+            (click)="showCreateChildForm(menu)"
+            class="text-green-600 hover:text-green-900 text-xs"
+            title="Add child menu">
+            ➕ Child
+          </button>
+          }
+          <span class="text-xs text-gray-400">Seq: {{ menu.sequent || 0 }}</span>
+          <button
+            (click)="editMenu(menu)"
+            class="text-yellow-600 hover:text-yellow-900 text-sm">
+            ✏️ Edit
+          </button>
+          <button
+            (click)="deleteMenu(menu)"
+            class="text-red-600 hover:text-red-900 text-sm">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Child Menus -->
+    @if (menu.childMenus && menu.childMenus.length > 0 && isNodeExpanded(menu.id)) {
+    <div class="border-t border-gray-200 bg-gray-50">
+      <div class="p-2">
+        @for (childMenu of menu.childMenus; track childMenu.id) {
+          <ng-container *ngTemplateOutlet="menuNode; context: { $implicit: childMenu, level: level + 1 }"></ng-container>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</ng-template>

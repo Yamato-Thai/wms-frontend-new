@@ -18,6 +18,7 @@ import { AuthService, UserInfo } from '../service/auth.service';
 export class MainLayoutComponent implements OnInit, OnDestroy {
   // UI State
   sidebarOpen = false;
+  sidebarCollapsed = false; // เพิ่มสำหรับ desktop collapse
   expandedItems = new Set<number>();
   currentUrl = '';
   currentMenuName: string | null = null;
@@ -42,7 +43,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private menuSubscription?: Subscription;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private mainService: MainService,
     private authService: AuthService
   ) {}
@@ -87,18 +88,18 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private handleRouteChange(url: string): void {
     this.currentUrl = url;
     this.checkCurrentRoute(url);
-    
+
     // Update showMenu if menuTree is loaded
     if (this.menuTree.length > 0) {
       this.updateShowMenuBasedOnRoute(url);
     }
-    
+
     this.updateCurrentMenuName();
   }
 
   private handleUserInfoUpdate(userInfo: UserInfo): void {
     this.userInfo = userInfo;
-    
+
     if (userInfo.isAuthenticated) {
       // Extract role information from Keycloak token
       this.extractUserRole();
@@ -107,7 +108,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private extractUserRole(): void {
     const keycloak = this.authService.getKeycloak();
-    
+
     if (!keycloak?.tokenParsed) {
       this.userRole = null;
       return;
@@ -164,46 +165,47 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private loadMenuData(): void {
     this.menuSubscription = this.mainService.getMenu().subscribe({
       next: (data) => {
+        console.log('📋 Menu data received:', data);
         this.menu = data;
-        console.log('Menu data loaded:', this.menu);
-        
-        // Build menu tree
-        this.menuTree = this.buildMenuTree(0); // root = 0
-        console.log('Menu tree built:', this.menuTree);
+
+        // API แล้วส่งมาเป็น hierarchical แล้ว ไม่ต้อง build ใหม่
+        this.menuTree = this.convertMenuItemToTreeNode(data);
+        console.log('🌳 Menu tree converted:', this.menuTree);
 
         // Update showMenu based on current URL
         this.updateShowMenuBasedOnRoute(this.currentUrl);
+        console.log('📍 ShowMenu for current route:', this.showMenu);
         this.updateCurrentMenuName();
       },
       error: (error) => {
-        console.error('Error loading menu:', error);
+        console.error('❌ Error loading menu data:', error);
+        // Try to load fallback data
+        this.menu = [];
+        this.menuTree = [];
+        this.showMenu = [];
       }
     });
-  }
-
-  private checkCurrentRoute(url: string): void {
+  }  private checkCurrentRoute(url: string): void {
     this.isDashboard = url === '/' || url === '/dashboard';
     this.isInInboundSection = url.startsWith('/inbound');
     this.isInOutboundSection = url.startsWith('/outbound');
-
-    console.log('Route check:', { url, isDashboard: this.isDashboard, isInInboundSection: this.isInInboundSection, isInOutboundSection: this.isInOutboundSection });
   }
 
   private updateShowMenuBasedOnRoute(url: string): void {
+    console.log('🎯 Updating showMenu for URL:', url);
     if (url.startsWith('/inbound')) {
       this.showMenu = this.menuTree.filter(item => item.Id === 4);
-      console.log('Showing inbound menu:', this.showMenu);
+      console.log('📦 Inbound menu items:', this.showMenu);
     } else if (url.startsWith('/outbound')) {
-      this.showMenu = this.menuTree.filter(item => item.Id === 5);
-      console.log('Showing outbound menu:', this.showMenu);
+      this.showMenu = this.menuTree.filter(item => item.Id === 6);
+      console.log('📦 Outbound menu items:', this.showMenu);
     } else {
       this.showMenu = [];
+      console.log('📦 No specific menu for this route');
     }
-  }
-
-  private updateCurrentMenuName(): void {
+  }  private updateCurrentMenuName(): void {
     const allMenus = this.flattenMenuTree(this.menuTree);
-    const foundMenu = allMenus.find(menu => 
+    const foundMenu = allMenus.find(menu =>
       menu.Link && this.currentUrl.startsWith(menu.Link)
     );
     this.currentMenuName = foundMenu ? foundMenu.Name : null;
@@ -218,6 +220,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       }
     }
     return result;
+  }
+
+  private convertMenuItemToTreeNode(menuItems: MenuItem[]): TreeNode[] {
+    return menuItems.map(item => ({
+      ...item,
+      Children: item.Children ? this.convertMenuItemToTreeNode(item.Children) : []
+    }));
   }
 
   private buildMenuTree(parentId: number): TreeNode[] {
@@ -250,6 +259,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
   logout(): void {
