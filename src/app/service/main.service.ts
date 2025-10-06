@@ -1,7 +1,7 @@
 // menu.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MenuItem } from '../model/mainmenu.model';
 import { environment } from '../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
@@ -128,11 +128,20 @@ export class MainService {
         }),
         catchError(error => {
           console.error('❌ Both APIs failed, using static JSON as final fallback:', error);
+          console.log('🔄 Loading mainmenus.json as fallback...');
           // สุดท้าย fallback ไป JSON
           return this.http.get<MenuItem[]>('/data/mainmenus.json').pipe(
+            map(jsonData => {
+              console.log('✅ Successfully loaded mainmenus.json:', jsonData);
+              console.log('🏗️ Building hierarchy from JSON data...');
+              const hierarchical = this.buildHierarchy(jsonData);
+              console.log('✅ JSON hierarchy built successfully:', hierarchical);
+              return hierarchical;
+            }),
             catchError(jsonError => {
               console.error('💥 All data sources failed:', jsonError);
-              return []; // ถ้าทุกอย่างไม่ทำงาน ส่ง empty array
+              console.log('🚨 Returning empty array as final fallback');
+              return of([]); // ถ้าทุกอย่างไม่ทำงาน ส่ง empty array
             })
           );
         })
