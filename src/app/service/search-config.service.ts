@@ -33,6 +33,42 @@ export class SearchConfigService {
 
   constructor() { }
 
+  // Config for Outbound List page
+  getOutboundListConfig(): SearchConfig {
+    return {
+      title: 'ค้นหารายการจัดส่งสินค้า',
+      searchType: 'OUTBOUND',
+      enabledFields: {
+        poNumber: false,
+        receiveNumber: false,
+        skuCode: true,
+        outboundNumber: true,
+        inventoryCode: false,
+        customerCode: true
+      },
+      statusOptions: [
+        { value: '', label: 'สถานะทั้งหมด' },
+        { value: 'Shipped', label: 'จัดส่งแล้ว' },
+        { value: 'Pending', label: 'รอดำเนินการ' }
+      ],
+      typeOptions: [
+        { value: '', label: 'ประเภททั้งหมด' },
+        { value: 'Normal', label: 'ปกติ' },
+        { value: 'Express', label: 'ด่วน' }
+      ],
+      vendorOptions: [
+        { value: '', label: 'ลูกค้าทั้งหมด' },
+        { value: 'Sakura Restaurant', label: 'Sakura Restaurant' },
+        { value: 'Thai Express', label: 'Thai Express' }
+      ],
+      placeholders: {
+        outboundNumber: 'เลขที่เอกสารจัดส่ง',
+        skuCode: 'รหัสสินค้า',
+        customerCode: 'รหัสลูกค้า'
+      }
+    };
+  }
+
   // Config for Receive List page
   getReceiveListConfig(): SearchConfig {
     return {
@@ -108,46 +144,6 @@ export class SearchConfigService {
       placeholders: {
         poNumber: 'ระบุเลขที่ PO...',
         skuCode: 'ระบุรหัสสินค้า...'
-      }
-    };
-  }
-
-  // Config for Outbound List page
-  getOutboundListConfig(): SearchConfig {
-    return {
-      title: 'ค้นหารายการจ่ายสินค้า',
-      searchType: 'OUTBOUND',
-      enabledFields: {
-        poNumber: false,
-        receiveNumber: false,
-        outboundNumber: true,
-        skuCode: true,
-        inventoryCode: false,
-        customerCode: true
-      },
-      statusOptions: [
-        { value: '', label: 'สถานะทั้งหมด' },
-        { value: 'Pending', label: 'รอดำเนินการ' },
-        { value: 'Picking', label: 'กำลังเบิก' },
-        { value: 'Shipped', label: 'จัดส่งแล้ว' },
-        { value: 'Delivered', label: 'ส่งมอบแล้ว' }
-      ],
-      typeOptions: [
-        { value: '', label: 'ประเภททั้งหมด' },
-        { value: 'Sale', label: 'ขาย' },
-        { value: 'Transfer', label: 'โอน' },
-        { value: 'Return', label: 'คืนสินค้า' }
-      ],
-      vendorOptions: [
-        { value: '', label: 'ลูกค้าทั้งหมด' },
-        { value: 'Customer A', label: 'ลูกค้า เอ' },
-        { value: 'Customer B', label: 'ลูกค้า บี' }
-      ],
-      apiEndpoint: '/api/search/outbound-documents',
-      placeholders: {
-        outboundNumber: 'ระบุเลขที่ใบจ่าย...',
-        skuCode: 'ระบุรหัสสินค้า...',
-        customerCode: 'ระบุรหัสลูกค้า...'
       }
     };
   }

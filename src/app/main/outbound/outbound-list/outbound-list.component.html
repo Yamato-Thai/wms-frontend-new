@@ -1,2 +1,380 @@
-<p>outbound-list works!</p>
-<p class="italic text-red-500">The quick brown fox jumps over the lazy dog.</p>
+<!-- Outbound list (list + detail) -->
+<div class="max-w-7xl mx-auto space-y-6">
+  
+  <!-- Search Center Component -->
+  <app-search-center 
+    [config]="searchConfig"
+    [actualResultCount]="outboundList.length"
+    (searchResult)="handleSearchResult($event)"
+    (filtersChanged)="handleFiltersChanged($event)"
+    (searchResults)="handleSearchResults($event)">
+  </app-search-center>
+
+  <!-- Simple List -->
+  <div class="card-no-padding">
+    <div class="p-4 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+        รายการทั้งหมด
+      </h3>
+      <button class="btn-primary">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        สร้างรายการใหม่
+      </button>
+    </div>
+    
+    <div class="divide-y divide-gray-100">
+      @for (r of outboundList; track r.id; let i = $index) {
+        <div (click)="select(r)" 
+             class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+             [class.bg-blue-50]="selectedItem?.id === r.id"
+             [class.border-l-4]="selectedItem?.id === r.id"
+             [class.border-blue-400]="selectedItem?.id === r.id">
+          
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500 font-medium">{{ r.date }}</div>
+              <div class="text-lg font-semibold text-gray-900">{{ r.id }} — {{ r.customer }}</div>
+              <div class="text-sm text-gray-500 flex items-center mt-1">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                {{ r.items }} รายการ • ฿{{ (r.items * 1250).toLocaleString() }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-right">
+            <div class="badge" 
+              [ngClass]="{
+                'badge-success': r.status==='Shipped',
+                'badge-warning': r.status==='Pending'
+              }">
+              {{ r.status === 'Shipped' ? 'จัดส่งแล้ว' : 'รอดำเนินการ' }}
+            </div>
+            <button class="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
+              ดูรายละเอียด
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Detail Section -->
+  @if (showDetail) {
+    <div class="space-y-6">
+      <div class="card-no-padding">
+        <div class="p-6 border-b border-gray-100">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+            <div class="flex items-center space-x-4 mb-4 lg:mb-0">
+              <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <span class="text-blue-700 text-lg font-bold">{{ (header.outboundNumber || selectedItem?.id)?.charAt(0) }}</span>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-gray-900">
+                  {{ header.outboundNumber || selectedItem?.id }} — {{ header.customer?.name || selectedItem?.customer }}
+                </h2>
+                <div class="flex items-center mt-1 space-x-3">
+                  <span class="badge"
+                    [ngClass]="{
+                      'badge-success': header.status === 'Shipped',
+                      'badge-warning': header.status === 'Pending'
+                    }">
+                    {{ header.status === 'Shipped' ? 'จัดส่งแล้ว' : 'รอดำเนินการ' }}
+                  </span>
+                  <span class="text-sm text-gray-500">{{ header.type }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+              <button class="btn-secondary" (click)="openHeaderModal()">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                แก้ไขข้อมูล
+              </button>
+            </div>
+          </div>
+
+          <!-- Information Grid -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="p-4 bg-gray-50 rounded-lg">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลการจัดส่ง</h3>
+              <div class="space-y-2">
+                <div>
+                  <div class="text-xs text-gray-500">เลขที่เอกสาร</div>
+                  <div class="font-semibold">{{ header.outboundNumber }}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">เลขที่ SO / วันที่</div>
+                  <div class="font-medium">{{ header.soNumber }} / {{ header.soDate }}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">เลขที่ใบส่งของ</div>
+                  <div class="font-medium">{{ header.deliveryNote }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 rounded-lg">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลลูกค้า</h3>
+              <div class="space-y-2">
+                <div class="font-semibold">{{ header.customer?.name }}</div>
+                <div class="text-sm text-gray-600">{{ header.customer?.address }}</div>
+                <div class="mt-3">
+                  <div class="text-xs text-gray-500">ผู้ติดต่อ</div>
+                  <div class="font-medium">{{ header.customer?.contact }}</div>
+                  <div class="text-sm text-gray-600">{{ header.customer?.phone }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 rounded-lg">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลเพิ่มเติม</h3>
+              <div class="space-y-2">
+                <div>
+                  <div class="text-xs text-gray-500">สถานะ / คุณภาพ</div>
+                  <div class="font-medium flex items-center space-x-2">
+                    <span>{{ header.status === 'Shipped' ? 'จัดส่งแล้ว' : 'รอดำเนินการ' }}</span>
+                    <span>/</span>
+                    <span [ngClass]="{
+                      'text-green-600': header.quality === 'Good',
+                      'text-yellow-600': header.quality === 'Fair',
+                      'text-red-600': header.quality === 'Poor'
+                    }">{{ header.quality }}</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">หมายเหตุ</div>
+                  <div class="font-medium">{{ header.remark }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3 sm:mb-0">รายการสินค้า ({{ header.items?.length || 0 }} รายการ)</h3>
+            <div class="flex items-center space-x-2">
+              <button class="btn-primary btn-sm" (click)="addItem()">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                เพิ่มสินค้า
+              </button>
+            </div>
+          </div>
+          
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div class="table-modern">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">รหัสสินค้า</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อสินค้า</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">จำนวน</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">คุณภาพ</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ราคา/หน่วย</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  @for (item of header.items; track item.itemCode; let i = $index) {
+                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                      <td class="px-4 py-3 text-sm text-gray-500">{{ i + 1 }}</td>
+                      <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ item.itemCode }}</td>
+                      <td class="px-4 py-3 text-sm text-gray-600">{{ item.itemName }}</td>
+                      <td class="px-4 py-3 text-sm text-gray-600">{{ item.qty | number }}</td>
+                      <td class="px-4 py-3">
+                        <span class="badge"
+                              [ngClass]="{
+                                'badge-success': item.quality === 'Good',
+                                'badge-warning': item.quality === 'Fair',
+                                'badge-error': item.quality === 'Poor'
+                              }">
+                          {{ item.quality }}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 text-sm text-gray-600">฿{{ item.price | number:'1.2-2' }}</td>
+                      <td class="px-4 py-3 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                          <button class="p-1 text-gray-400 hover:text-blue-600 transition-colors duration-200" (click)="editItem(i)" title="แก้ไข">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                          </button>
+                          <button class="p-1 text-gray-400 hover:text-red-600 transition-colors duration-200" (click)="removeItem(i)" title="ลบ">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot class="bg-gray-50">
+                  <tr>
+                    <td colspan="7" class="px-4 py-3">
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between text-sm">
+                        <span class="text-gray-600 mb-2 sm:mb-0">
+                          จำนวนรวม: <span class="font-semibold text-gray-900">{{ totalQuantity | number }}</span> หน่วย
+                        </span>
+                        <span class="text-gray-600">
+                          มูลค่ารวม: <span class="font-semibold text-gray-900">฿{{ totalValue | number:'1.2-2' }}</span>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modals -->
+  @if (showItemModal) {
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-gray-800">
+              {{ editingItemIndex >= 0 ? 'แก้ไขรายการสินค้า' : 'เพิ่มรายการสินค้าใหม่' }}
+            </h3>
+            <button class="text-gray-400 hover:text-gray-600 transition-colors duration-200" 
+                    (click)="closeItemModal()">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="form-label">รหัสสินค้า</label>
+              <input type="text" class="input-modern" [(ngModel)]="newItem.itemCode" name="itemCode" placeholder="ระบุรหัสสินค้า">
+            </div>
+            <div>
+              <label class="form-label">ชื่อสินค้า</label>
+              <input type="text" class="input-modern" [(ngModel)]="newItem.itemName" name="itemName" placeholder="ระบุชื่อสินค้า">
+            </div>
+            <div>
+              <label class="form-label">จำนวน</label>
+              <input type="number" class="input-modern" [(ngModel)]="newItem.qty" name="qty" placeholder="0">
+            </div>
+            <div>
+              <label class="form-label">ราคาต่อหน่วย</label>
+              <input type="number" class="input-modern" [(ngModel)]="newItem.price" name="price" step="0.01" placeholder="0.00">
+            </div>
+            <div class="md:col-span-2">
+              <label class="form-label">คุณภาพสินค้า</label>
+              <div class="flex space-x-6">
+                <label class="flex items-center">
+                  <input type="radio" [(ngModel)]="newItem.quality" name="quality" value="Good" class="mr-2 text-blue-500 focus:ring-blue-500">
+                  <span class="text-sm font-medium text-gray-700">ดี (Good)</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" [(ngModel)]="newItem.quality" name="quality" value="Fair" class="mr-2 text-blue-500 focus:ring-blue-500">
+                  <span class="text-sm font-medium text-gray-700">ปานกลาง (Fair)</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" [(ngModel)]="newItem.quality" name="quality" value="Poor" class="mr-2 text-blue-500 focus:ring-blue-500">
+                  <span class="text-sm font-medium text-gray-700">ไม่ดี (Poor)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          @if (newItem.itemCode || newItem.itemName) {
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">ตัวอย่าง:</h4>
+              <div class="text-sm text-gray-600">
+                <span class="font-medium">{{ newItem.itemCode || 'N/A' }}</span> - 
+                {{ newItem.itemName || 'N/A' }} 
+                ({{ newItem.qty || 0 }} หน่วย @ ฿{{ newItem.price || 0 }})
+              </div>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeItemModal()">ยกเลิก</button>
+          <button type="button" class="btn-primary btn-md" (click)="saveItem()">
+            {{ editingItemIndex >= 0 ? 'บันทึกการแก้ไข' : 'เพิ่มสินค้า' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showHeaderModal) {
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-gray-800">แก้ไขข้อมูลหลัก</h3>
+            <button class="text-gray-400 hover:text-gray-600 transition-colors duration-200" (click)="closeHeaderModal()">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="form-label">เลขที่เอกสารจัดส่ง</label>
+              <input type="text" class="input-modern" [(ngModel)]="header.outboundNumber" name="outboundNumber">
+            </div>
+            <div>
+              <label class="form-label">เลขที่ SO</label>
+              <input type="text" class="input-modern" [(ngModel)]="header.soNumber" name="soNumber">
+            </div>
+            <div>
+              <label class="form-label">สถานะ</label>
+              <select class="select-input-modern" [(ngModel)]="header.status" name="status">
+                <option value="Pending">รอดำเนินการ</option>
+                <option value="Shipped">จัดส่งแล้ว</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">ประเภท</label>
+              <select class="select-input-modern" [(ngModel)]="header.type" name="type">
+                <option value="Normal">ปกติ</option>
+                <option value="Express">ด่วน</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">หมายเหตุ</label>
+            <textarea class="textarea-modern" [(ngModel)]="header.remark" name="remark" rows="3" placeholder="ระบุหมายเหตุเพิ่มเติม..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeHeaderModal()">ยกเลิก</button>
+          <button type="button" class="btn-primary btn-md" (click)="saveHeader(); closeHeaderModal()">บันทึกการเปลี่ยนแปลง</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

@@ -788,7 +788,7 @@
         "Name": "Search Order",
         "Description": "Search Order",
         "IsActive": 1,
-        "Link": "/modules/outbound/order",
+        "Link": "/outbound/outbound-list",
         "Sequent": 1,
         "DoMain": "WMS-Main"
     },
