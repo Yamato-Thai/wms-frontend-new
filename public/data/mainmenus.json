@@ -798,7 +798,7 @@
         "Name": "Import Order",
         "Description": "Import Order",
         "IsActive": 1,
-        "Link": "/modules/outbound/import-order",
+        "Link": "/outbound/import",
         "Sequent": 2,
         "DoMain": "WMS-Main"
     },
