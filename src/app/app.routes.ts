@@ -21,12 +21,16 @@ export const routes: Routes = [
         loadChildren: () => import('./main/outbound/outbound.routes').then(m => m.routes)
       },
       {
+        path: 'inventory',
+        loadChildren: () => import('./main/inventory/inventory.routes').then(m => m.routes)
+      },
+      {
         path: 'admin/menu-management',
         loadComponent: () => import('./admin/menu-management/menu-management.component').then(m => m.MenuManagementComponent)
       },
       // เพิ่ม feature อื่น ๆ
     ]
-  },{
+  }, {
     path: 'template',
     loadComponent: () => import('./template/template.component').then(m => m.TemplateComponent)
   }

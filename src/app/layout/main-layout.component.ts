@@ -32,6 +32,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   isDashboard = true;
   isInInboundSection = false;
   isInOutboundSection = false;
+  isInInventorySection = false;
 
   // User Info
   userInfo: UserInfo = { isAuthenticated: false };
@@ -46,7 +47,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private mainService: MainService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeComponent();
@@ -185,10 +186,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         this.showMenu = [];
       }
     });
-  }  private checkCurrentRoute(url: string): void {
+  } private checkCurrentRoute(url: string): void {
     this.isDashboard = url === '/' || url === '/dashboard';
     this.isInInboundSection = url.startsWith('/inbound');
     this.isInOutboundSection = url.startsWith('/outbound');
+    this.isInInventorySection = url.startsWith('/inventory');
   }
 
   private updateShowMenuBasedOnRoute(url: string): void {
@@ -196,6 +198,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (url.startsWith('/inbound')) {
       this.showMenu = this.menuTree.filter(item => item.Id === 4);
       console.log('📦 Inbound menu items:', this.showMenu);
+    } else if (url.startsWith('/inventory')) {
+      this.showMenu = this.menuTree.filter(item => item.Id === 5);
+      console.log('📦 Inventory menu items:', this.showMenu);
     } else if (url.startsWith('/outbound')) {
       this.showMenu = this.menuTree.filter(item => item.Id === 6);
       console.log('📦 Outbound menu items:', this.showMenu);
@@ -203,7 +208,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.showMenu = [];
       console.log('📦 No specific menu for this route');
     }
-  }  private updateCurrentMenuName(): void {
+  } private updateCurrentMenuName(): void {
     const allMenus = this.flattenMenuTree(this.menuTree);
     const foundMenu = allMenus.find(menu =>
       menu.Link && this.currentUrl.startsWith(menu.Link)

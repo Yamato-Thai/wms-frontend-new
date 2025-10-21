@@ -653,7 +653,7 @@
         "Name": "Inventory Adjustment List",
         "Description": "Inventory Adjustment List",
         "IsActive": 1,
-        "Link": "/modules/inventory/adjustment-list",
+        "Link": "/inventory/adjustment",
         "Sequent": 1,
         "DoMain": "WMS-Main"
     },
