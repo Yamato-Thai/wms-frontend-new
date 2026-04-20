@@ -46,8 +46,8 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
     provideRouter(routes),
-    // // สำคัญ! ให้ Keycloak initialize ก่อนที่ app จะเริ่มทำงาน
-    // provideAppInitializer(() => initializeKeycloak()()),
+    // สำคัญ! ให้ Keycloak initialize ก่อนที่ app จะเริ่มทำงาน
+    provideAppInitializer(() => initializeKeycloak()()),
   ]
 })
 .catch(err => console.error(err));

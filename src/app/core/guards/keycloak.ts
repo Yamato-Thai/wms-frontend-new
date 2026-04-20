@@ -1,5 +1,5 @@
 import Keycloak from 'keycloak-js';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 let keycloak: Keycloak | null = null;
 
@@ -13,15 +13,13 @@ export function initializeKeycloak() {
       }
 
       keycloak = new Keycloak({
-        url: environment.keycloak.url, // แก้ให้ตรงกับ server ของคุณ
+        url: environment.keycloak.url,
         realm: environment.keycloak.realm,
         clientId: environment.keycloak.clientId
       });
 
       keycloak.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-        pkceMethod: false,  // ปิด PKCE
+        pkceMethod: false,
         flow: 'standard',
         checkLoginIframe: false,
         enableLogging: true
