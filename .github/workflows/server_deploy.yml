@@ -14,6 +14,7 @@ on:
   # หรือ
   #npm version major  # เพิ่ม major version # 1.0.0 -> 2.0.0
   #git push origin master --tags
+  # git push --tags ส่ง tag ขึ้น remote ด้วย
   
   # เพิ่ม tag ด้วยคำสั่ง git tag v1.0.0 แล้ว push ขึ้น remote
   # git push origin v1.0.0

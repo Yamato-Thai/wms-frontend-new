@@ -1,0 +1,104 @@
+<div class="container mx-auto p-4">
+  <div class="bg-white shadow rounded-lg p-6">
+    <!-- File Definition Selection -->
+    <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-bold mb-2">Select File Type</label>
+      <select [(ngModel)]="selectedFileDefinition" class="w-full border rounded px-3 py-2">
+        <option value="">Select a file type...</option>
+        <option *ngFor="let def of fileDefinitions" [value]="def.id">
+          {{def.name}} - {{def.description}}
+        </option>
+      </select>
+    </div>
+
+    <!-- File Upload -->
+    <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-bold mb-2">Upload File</label>
+      <input type="file" (change)="onFileSelected($event)" 
+             class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"/>
+    </div>
+
+    <!-- Uploaded Files List -->
+    <div class="mb-6" *ngIf="uploadedFiles.length > 0">
+      <h3 class="text-lg font-semibold mb-3">Uploaded Files</h3>
+      <div class="bg-gray-50 rounded p-4">
+        <div *ngFor="let file of uploadedFiles" class="flex justify-between items-center mb-2">
+          <div>
+            <span class="font-medium">{{file.name}}</span>
+            <span class="text-sm text-gray-500 ml-2">{{file.size | number}} bytes</span>
+          </div>
+          <div class="space-x-2">
+            <button (click)="validateFile(file)" 
+                    class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+              Validate
+            </button>
+            <button (click)="processFile(file)"
+                    class="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600">
+              Process
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Validation Messages -->
+    <div class="mb-6" *ngIf="validationMessages.length > 0">
+      <h3 class="text-lg font-semibold mb-3">Validation Messages</h3>
+      <div class="bg-yellow-50 rounded p-4">
+        <div *ngFor="let msg of validationMessages" class="mb-1">
+          <span class="text-yellow-700">Row {{msg.row}}:</span>
+          <span class="ml-2">{{msg.message}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Data -->
+    <div class="mb-6" *ngIf="previewData.length > 0">
+      <h3 class="text-lg font-semibold mb-3">Preview</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-6 py-3 border-b text-left">Document #</th>
+              <th class="px-6 py-3 border-b text-left">Supplier</th>
+              <th class="px-6 py-3 border-b text-left">Date</th>
+              <th class="px-6 py-3 border-b text-right">Items</th>
+              <th class="px-6 py-3 border-b text-right">Total Value</th>
+              <th class="px-6 py-3 border-b text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of previewData">
+              <td class="px-6 py-4 border-b">{{row.documentNumber}}</td>
+              <td class="px-6 py-4 border-b">{{row.supplier}}</td>
+              <td class="px-6 py-4 border-b">{{row.date | date:'short'}}</td>
+              <td class="px-6 py-4 border-b text-right">{{row.itemCount}}</td>
+              <td class="px-6 py-4 border-b text-right">{{row.totalValue | number:'1.2-2'}}</td>
+              <td class="px-6 py-4 border-b text-center">
+                <span [class]="{'text-green-600': row.status === 'Valid',
+                               'text-yellow-600': row.status === 'Warning',
+                               'text-red-600': row.status === 'Error'}">
+                  {{row.status}}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Import Button -->
+    <div class="flex justify-end">
+      <button (click)="confirmImport()"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              [disabled]="previewData.length === 0">
+        Confirm Import
+      </button>
+    </div>
+  </div>
+</div>

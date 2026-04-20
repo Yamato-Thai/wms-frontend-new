@@ -1,0 +1,482 @@
+<div class="max-w-7xl mx-auto space-y-6">
+  
+  <!-- Page Header -->
+  <div class="card">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">ปรับปรุงสินค้า (Adjustment)</h1>
+          <p class="text-sm text-gray-500 mt-1">จัดการย้ายโลเคชั่น เปลี่ยนคุณภาพ และปรับจำนวนสินค้า</p>
+        </div>
+      </div>
+      <div class="badge badge-info">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        {{ adjustmentHistory.length }} รายการ
+      </div>
+    </div>
+  </div>
+
+  <!-- Adjustment Form -->
+  <div class="card">
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg class="w-5 h-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        สร้างรายการปรับปรุงใหม่
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">กรอกข้อมูลเพื่อปรับปรุงสินค้าในคลัง</p>
+    </div>
+
+    <form (ngSubmit)="submitAdjustment()" class="space-y-6">
+      
+      <!-- Item Selection -->
+      <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <label class="form-label">เลือกสินค้า <span class="text-red-500">*</span></label>
+        <select class="select-input-modern" 
+                (change)="onItemSelect($event)"
+                [(ngModel)]="adjustmentForm.itemCode" 
+                name="itemCode" 
+                required>
+          <option value="">-- เลือกสินค้า --</option>
+          @for (item of availableItems; track item.code) {
+            <option [value]="item.code">{{ item.code }} - {{ item.name }} ({{ item.location }})</option>
+          }
+        </select>
+        
+        @if (adjustmentForm.itemCode) {
+          <div class="mt-3 p-3 bg-white rounded border border-gray-200">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div>
+                <span class="text-gray-500">รหัสสินค้า:</span>
+                <div class="font-semibold text-gray-900">{{ adjustmentForm.itemCode }}</div>
+              </div>
+              <div>
+                <span class="text-gray-500">ชื่อสินค้า:</span>
+                <div class="font-semibold text-gray-900">{{ adjustmentForm.itemName }}</div>
+              </div>
+              <div>
+                <span class="text-gray-500">จำนวนปัจจุบัน:</span>
+                <div class="font-semibold text-blue-600">{{ adjustmentForm.currentQty }} หน่วย</div>
+              </div>
+              <div>
+                <span class="text-gray-500">คุณภาพ:</span>
+                <div>
+                  <span class="badge"
+                        [ngClass]="{
+                          'badge-success': adjustmentForm.currentQuality === 'Good',
+                          'badge-warning': adjustmentForm.currentQuality === 'Fair',
+                          'badge-error': adjustmentForm.currentQuality === 'Poor' || adjustmentForm.currentQuality === 'Damaged'
+                        }">
+                    {{ adjustmentForm.currentQuality }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (adjustmentForm.itemCode) {
+        <!-- Adjustment Type Tabs -->
+        <div class="flex flex-wrap gap-2 p-4 bg-purple-50 rounded-lg border border-purple-200">
+          <button type="button" 
+                  class="btn-sm"
+                  [ngClass]="selectedAdjustmentType === 'location' ? 'btn-primary' : 'btn-secondary'"
+                  (click)="selectedAdjustmentType = 'location'">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            ย้ายโลเคชั่น
+          </button>
+          <button type="button" 
+                  class="btn-sm"
+                  [ngClass]="selectedAdjustmentType === 'quality' ? 'btn-primary' : 'btn-secondary'"
+                  (click)="selectedAdjustmentType = 'quality'">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            เปลี่ยนคุณภาพ
+          </button>
+          <button type="button" 
+                  class="btn-sm"
+                  [ngClass]="selectedAdjustmentType === 'quantity' ? 'btn-primary' : 'btn-secondary'"
+                  (click)="selectedAdjustmentType = 'quantity'">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+            </svg>
+            ปรับจำนวน
+          </button>
+          <button type="button" 
+                  class="btn-sm"
+                  [ngClass]="selectedAdjustmentType === 'multiple' ? 'btn-primary' : 'btn-secondary'"
+                  (click)="selectedAdjustmentType = 'multiple'">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            ปรับหลายรายการ
+          </button>
+        </div>
+
+        <!-- Adjustment Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Location Adjustment -->
+          @if (selectedAdjustmentType === 'location' || selectedAdjustmentType === 'multiple') {
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                ย้ายโลเคชั่น
+              </h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="form-label text-xs">โลเคชั่นเดิม</label>
+                  <input type="text" 
+                         class="input-modern bg-gray-100" 
+                         [value]="adjustmentForm.currentLocation" 
+                         readonly>
+                </div>
+                <div>
+                  <label class="form-label text-xs">จำนวนที่ต้องการย้าย <span class="text-red-500">*</span></label>
+                  <input type="number" 
+                         class="input-modern text-center font-bold text-lg text-blue-600" 
+                         [(ngModel)]="adjustmentForm.transferQty" 
+                         name="transferQty"
+                         [max]="adjustmentForm.currentQty"
+                         min="0"
+                         placeholder="0">
+                  <div class="text-xs text-gray-500 mt-1">
+                    สูงสุด: {{ adjustmentForm.currentQty }} หน่วย
+                  </div>
+                </div>
+                <div class="flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </div>
+                <div>
+                  <label class="form-label text-xs">โลเคชั่นใหม่</label>
+                  <select class="select-input-modern" 
+                          [(ngModel)]="adjustmentForm.newLocation" 
+                          name="newLocation">
+                    @for (loc of locations; track loc) {
+                      <option [value]="loc">{{ loc }}</option>
+                    }
+                  </select>
+                </div>
+                @if (adjustmentForm.transferQty > 0 && adjustmentForm.currentLocation !== adjustmentForm.newLocation) {
+                  <div class="p-3 bg-white rounded border border-blue-300">
+                    <div class="text-xs text-blue-700 space-y-1">
+                      <div class="font-semibold">สรุป:</div>
+                      <div>• ย้าย {{ adjustmentForm.transferQty }} หน่วย</div>
+                      <div>• จาก {{ adjustmentForm.currentLocation }} → {{ adjustmentForm.newLocation }}</div>
+                      <div>• คงเหลือที่ {{ adjustmentForm.currentLocation }}: {{ adjustmentForm.currentQty - adjustmentForm.transferQty }} หน่วย</div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Quality Adjustment -->
+          @if (selectedAdjustmentType === 'quality' || selectedAdjustmentType === 'multiple') {
+            <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <h3 class="text-sm font-semibold text-yellow-900 mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                เปลี่ยนคุณภาพ
+              </h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="form-label text-xs">คุณภาพเดิม</label>
+                  <input type="text" 
+                         class="input-modern bg-gray-100" 
+                         [value]="adjustmentForm.currentQuality" 
+                         readonly>
+                </div>
+                <div>
+                  <label class="form-label text-xs">จำนวนที่ต้องการเปลี่ยน <span class="text-red-500">*</span></label>
+                  <input type="number" 
+                         class="input-modern text-center font-bold text-lg text-yellow-600" 
+                         [(ngModel)]="adjustmentForm.qualityChangeQty" 
+                         name="qualityChangeQty"
+                         [max]="adjustmentForm.currentQty"
+                         min="0"
+                         placeholder="0">
+                  <div class="text-xs text-gray-500 mt-1">
+                    สูงสุด: {{ adjustmentForm.currentQty }} หน่วย
+                  </div>
+                </div>
+                <div class="flex items-center justify-center">
+                  <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </div>
+                <div>
+                  <label class="form-label text-xs">คุณภาพใหม่</label>
+                  <select class="select-input-modern" 
+                          [(ngModel)]="adjustmentForm.newQuality" 
+                          name="newQuality">
+                    @for (quality of qualities; track quality) {
+                      <option [value]="quality">{{ quality }}</option>
+                    }
+                  </select>
+                </div>
+                @if (adjustmentForm.qualityChangeQty > 0 && adjustmentForm.currentQuality !== adjustmentForm.newQuality) {
+                  <div class="p-3 bg-white rounded border border-yellow-300">
+                    <div class="text-xs text-yellow-700 space-y-1">
+                      <div class="font-semibold">สรุป:</div>
+                      <div>• เปลี่ยนคุณภาพ {{ adjustmentForm.qualityChangeQty }} หน่วย</div>
+                      <div>• จาก {{ adjustmentForm.currentQuality }} → {{ adjustmentForm.newQuality }}</div>
+                      <div>• คงเหลือคุณภาพ {{ adjustmentForm.currentQuality }}: {{ adjustmentForm.currentQty - adjustmentForm.qualityChangeQty }} หน่วย</div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Quantity Adjustment -->
+          @if (selectedAdjustmentType === 'quantity' || selectedAdjustmentType === 'multiple') {
+            <div class="p-4 bg-green-50 rounded-lg border border-green-200"
+                 [ngClass]="{'md:col-span-2': selectedAdjustmentType === 'quantity'}">
+              <h3 class="text-sm font-semibold text-green-900 mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+                ปรับจำนวน
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="form-label text-xs">จำนวนปัจจุบัน</label>
+                  <input type="number" 
+                         class="input-modern bg-gray-100 text-center font-bold text-lg" 
+                         [value]="adjustmentForm.currentQty" 
+                         readonly>
+                </div>
+                <div>
+                  <label class="form-label text-xs">ปรับเพิ่ม/ลด</label>
+                  <input type="number" 
+                         class="input-modern text-center font-bold text-lg"
+                         [ngClass]="{
+                           'text-green-600': adjustmentForm.adjustmentQty > 0,
+                           'text-red-600': adjustmentForm.adjustmentQty < 0
+                         }"
+                         [(ngModel)]="adjustmentForm.adjustmentQty" 
+                         name="adjustmentQty"
+                         placeholder="0">
+                  <div class="text-xs text-gray-500 mt-1 text-center">
+                    ใส่เลขบวกเพื่อเพิ่ม หรือเลขลบเพื่อลด
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label text-xs">จำนวนใหม่</label>
+                  <input type="number" 
+                         class="input-modern bg-purple-100 text-center font-bold text-lg text-purple-700" 
+                         [value]="calculateNewQty()" 
+                         readonly>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Reason -->
+        <div>
+          <label class="form-label">เหตุผลในการปรับปรุง <span class="text-red-500">*</span></label>
+          <textarea class="textarea-modern" 
+                    [(ngModel)]="adjustmentForm.reason" 
+                    name="reason"
+                    rows="3" 
+                    placeholder="ระบุเหตุผลในการปรับปรุงสินค้า..."
+                    required></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+          <button type="submit" class="btn-primary flex-1 sm:flex-none">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            บันทึกรายการ
+          </button>
+          <button type="button" class="btn-secondary flex-1 sm:flex-none" (click)="resetForm()">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            ล้างข้อมูล
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+
+  <!-- Adjustment History -->
+  <div class="card-no-padding">
+    <div class="p-4 border-b border-gray-100">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg class="w-5 h-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        ประวัติการปรับปรุง
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">รายการปรับปรุงสินค้าทั้งหมด</p>
+    </div>
+
+    @if (adjustmentHistory.length === 0) {
+      <div class="p-12 text-center">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">ยังไม่มีรายการปรับปรุง</h3>
+        <p class="text-gray-500">เริ่มสร้างรายการปรับปรุงสินค้าเพื่อดูประวัติที่นี่</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">เลขที่</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่/เวลา</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สินค้า</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ประเภท</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">รายละเอียด</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">เหตุผล</th>
+              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">สถานะ</th>
+              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (item of adjustmentHistory; track item.id) {
+              <tr class="hover:bg-gray-50 transition-colors duration-200">
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ item.id }}</div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ item.timestamp | date:'dd/MM/yyyy' }}</div>
+                  <div class="text-xs text-gray-500">{{ item.timestamp | date:'HH:mm' }}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm font-medium text-gray-900">{{ item.itemCode }}</div>
+                  <div class="text-xs text-gray-500">{{ item.itemName }}</div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="badge" [ngClass]="getAdjustmentTypeBadge(item.adjustmentType)">
+                    {{ getAdjustmentTypeLabel(item.adjustmentType) }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-xs space-y-1">
+                    @if (item.currentLocation !== item.newLocation && item.transferQty > 0) {
+                      <div class="flex items-center text-blue-600">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        </svg>
+                        ย้าย {{ item.transferQty }} หน่วย: {{ item.currentLocation }} → {{ item.newLocation }}
+                      </div>
+                    }
+                    @if (item.currentQuality !== item.newQuality && item.qualityChangeQty > 0) {
+                      <div class="flex items-center text-yellow-600">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        เปลี่ยน {{ item.qualityChangeQty }} หน่วย: {{ item.currentQuality }} → {{ item.newQuality }}
+                      </div>
+                    }
+                    @if (item.adjustmentQty !== 0) {
+                      <div class="flex items-center"
+                           [ngClass]="{
+                             'text-green-600': item.adjustmentQty > 0,
+                             'text-red-600': item.adjustmentQty < 0
+                           }">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                        </svg>
+                        {{ item.currentQty }} {{ item.adjustmentQty > 0 ? '+' : '' }}{{ item.adjustmentQty }} = {{ item.newQty }}
+                      </div>
+                    }
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-xs text-gray-600 max-w-xs truncate" [title]="item.reason">
+                    {{ item.reason }}
+                  </div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap text-center">
+                  <span class="badge" [ngClass]="getStatusBadge(item.status)">
+                    {{ getStatusLabel(item.status) }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap text-center">
+                  @if (item.status === 'completed') {
+                    <button class="text-red-600 hover:text-red-800 text-sm font-medium"
+                            (click)="confirmCancel(item)">
+                      ยกเลิก
+                    </button>
+                  } @else {
+                    <span class="text-gray-400 text-sm">-</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Cancel Confirmation Modal -->
+  @if (showConfirmModal && itemToCancel) {
+    <div class="modal-overlay">
+      <div class="modal-content max-w-md">
+        <div class="modal-header">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+              <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              ยืนยันการยกเลิก
+            </h3>
+            <button class="text-gray-400 hover:text-gray-600" (click)="closeConfirmModal()">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p class="text-gray-600 mb-4">คุณต้องการยกเลิกรายการปรับปรุงนี้หรือไม่?</p>
+          <div class="p-3 bg-gray-50 rounded-lg space-y-2 text-sm">
+            <div><span class="font-medium">เลขที่:</span> {{ itemToCancel.id }}</div>
+            <div><span class="font-medium">สินค้า:</span> {{ itemToCancel.itemCode }} - {{ itemToCancel.itemName }}</div>
+            <div><span class="font-medium">ประเภท:</span> {{ getAdjustmentTypeLabel(itemToCancel.adjustmentType) }}</div>
+          </div>
+          <p class="text-sm text-red-600 mt-3">
+            <strong>หมายเหตุ:</strong> การยกเลิกจะไม่สามารถย้อนกลับได้
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="closeConfirmModal()">ปิด</button>
+          <button type="button" class="btn-error" (click)="cancelAdjustment()">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            ยกเลิกรายการ
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
